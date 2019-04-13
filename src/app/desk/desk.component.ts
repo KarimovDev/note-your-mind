@@ -2,7 +2,6 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { ITaskCard } from '../model/itaskcard';
 import { DeskDataService } from '../services/desk-data.service';
 import { DragNDropService } from '../services/drag-n-drop.service';
-import { MethodFn } from '@angular/core/src/reflection/types';
 
 @Component({
     selector: 'nym-desk',
@@ -11,21 +10,28 @@ import { MethodFn } from '@angular/core/src/reflection/types';
 })
 export class DeskComponent implements OnInit {
     private taskCards: ITaskCard[] = [];
-    private currentCard: ITaskCard;
-    private shiftX: number;
-    private shiftY: number;
     private maxZIndex: number = 0;
 
     @HostListener('document:mousemove', ['$event'])
     private onMouseMove(e: MouseEvent): void {
-        if (this.currentCard && this.currentCard.isDrag) {
-            this.currentCard.top = e.pageY - this.shiftY + 'px';
-            this.currentCard.left = e.pageX - this.shiftX + 'px';
+        if (
+            this.dragNDropService.currentCard &&
+            this.dragNDropService.currentCard.isDrag
+        ) {
+            this.dragNDropService.currentCard.top =
+                e.pageY - this.dragNDropService.shiftY + 'px';
+            this.dragNDropService.currentCard.left =
+                e.pageX - this.dragNDropService.shiftX + 'px';
         }
     }
 
-    @HostListener('document:ondragstart')
-    private onDragStart(): boolean {
+    @HostListener('document:selectstart')
+    private onSelectStart(): boolean {
+        return false;
+    }
+
+    @HostListener('document:mousedown')
+    private onMouseDownDoc(): boolean {
         return false;
     }
 
@@ -38,36 +44,38 @@ export class DeskComponent implements OnInit {
         this.taskCards = this.deskDataService.getData();
     }
 
-    private onMouseDown(e: MouseEvent, index: number): void {
-        this.currentCard = this.taskCards[index];
-        this.currentCard.isDrag = true;
+    private onMouseDown(e: MouseEvent, index: number): boolean {
+        this.dragNDropService.currentCard = this.taskCards[index];
+        this.dragNDropService.currentCard.isDrag = true;
+        this.dragNDropService.currentIndex = index;
 
         const target: any = e.target;
 
         this.maxZIndex++;
         target.parentNode.style.zIndex = this.maxZIndex.toString();
 
-        const getCoords: any = (elem: any): { top: number; left: number } => {
-            elem.parentNode.style.position = 'fixed';
+        const coords: {
+            top: number;
+            left: number;
+        } = this.dragNDropService.getCoords(target);
 
-            const box: any = elem.getBoundingClientRect();
+        this.dragNDropService.shiftX = e.pageX - coords.left;
+        this.dragNDropService.shiftY = e.pageY - coords.top;
 
-            elem.parentNode.style.position = 'absolute';
-
-            return {
-                top: box.top + pageYOffset,
-                left: box.left + pageXOffset,
-            };
-        };
-
-        const coords: { top: number; left: number } = getCoords(target);
-
-        this.shiftX = e.pageX - coords.left;
-        this.shiftY = e.pageY - coords.top;
+        return false;
     }
 
-    private onMouseUp(index: number): void {
-        this.currentCard = this.taskCards[index];
-        this.currentCard.isDrag = false;
+    @HostListener('document:mouseup', ['$event'])
+    private onMouseUp(e: MouseEvent): void {
+        if (
+            e.pageY <= this.dragNDropService.deleteCoords.top + 50 &&
+            e.pageX <= this.dragNDropService.deleteCoords.left + 50 &&
+            e.pageX >= this.dragNDropService.deleteCoords.left
+        ) {
+            this.dragNDropService.currentCard = undefined;
+            this.taskCards.splice(this.dragNDropService.currentIndex, 1);
+        } else {
+            this.dragNDropService.currentCard.isDrag = false;
+        }
     }
 }

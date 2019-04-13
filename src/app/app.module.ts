@@ -8,10 +8,11 @@ import localeRu from '@angular/common/locales/ru';
 import { DeskDataService } from './services/desk-data.service';
 import { registerLocaleData } from '@angular/common';
 import { DragNDropService } from './services/drag-n-drop.service';
+import { NavbarComponent } from './navbar/navbar.component';
 
 registerLocaleData(localeRu, 'ru');
 @NgModule({
-    declarations: [AppComponent, DeskComponent, TaskComponent],
+    declarations: [AppComponent, DeskComponent, TaskComponent, NavbarComponent],
     imports: [BrowserModule, AppRoutingModule],
     providers: [
         DeskDataService,
