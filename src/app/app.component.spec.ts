@@ -20,14 +20,18 @@ describe('AppComponent', () => {
     });
 
     it(`should have as title 'note-your-mind'`, () => {
-        const fixture: ComponentFixture<AppComponent> = TestBed.createComponent(AppComponent);
+        const fixture: ComponentFixture<AppComponent> = TestBed.createComponent(
+            AppComponent
+        );
         const app: AppComponent = fixture.debugElement.componentInstance;
 
         expect(app.title).toEqual('note-your-mind');
     });
 
     it('should render title in a h1 tag', () => {
-        const fixture: ComponentFixture<AppComponent> = TestBed.createComponent(AppComponent);
+        const fixture: ComponentFixture<AppComponent> = TestBed.createComponent(
+            AppComponent
+        );
 
         fixture.detectChanges();
 
