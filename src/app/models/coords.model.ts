@@ -1,4 +1,4 @@
-export interface ICoords {
+export interface Coords {
     top: number;
     left: number;
 }

@@ -1,11 +1,12 @@
+<nym-navbar></nym-navbar>
 <div
     class="card"
     *ngFor="let card of taskCards; let i = index"
     [style.position]="'absolute'"
-    [style.width]="cardWidth+'px'"
+    [style.width]="cardWidth + 'px'"
     [style.top]="card.top"
     [style.left]="card.left"
-    [style.zIndex]="(card.zIndex ? card.zIndex : '')"
+    [style.zIndex]="card.zIndex ? card.zIndex : ''"
     [id]="card.id"
 >
     <div class="card-header" (mousedown)="onMouseDown($event, i)">

@@ -16,6 +16,7 @@
           "array-destructuring"
       ],
       "no-inferrable-types": [true, "ignore-params", "ignore-properties"],
-      "member-access": true
+      "member-access": true,
+      "interface-name": [true, "never-prefix"]
   }
 }

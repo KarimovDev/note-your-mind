@@ -1,6 +1,6 @@
-import { ITask } from './itask';
+import { Task } from './task.model';
 
-export interface ITaskCard {
+export interface TaskCard {
     id: string;
     name: string;
     top?: string;
@@ -8,5 +8,5 @@ export interface ITaskCard {
     isDrag?: boolean;
     isNew?: boolean;
     zIndex?: number;
-    tasks: Array<ITask>;
+    tasks: Array<Task>;
 }

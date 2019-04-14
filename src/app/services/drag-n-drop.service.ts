@@ -1,11 +1,11 @@
 import { Injectable, OnInit, HostListener } from '@angular/core';
-import { ITaskCard } from '../model/itaskcard';
+import { TaskCard } from '../models/taskcard.model';
 import { Subject, Observable } from 'rxjs';
-import { ICoords } from '../model/icoords';
+import { Coords } from '../models/coords.model';
 
 @Injectable()
 export class DragNDropService implements OnInit {
-    public currentCard: ITaskCard;
+    public currentCard: TaskCard;
     private _addCoords: any;
     private _deleteCoords: any;
     public shiftX: number;
@@ -20,15 +20,15 @@ export class DragNDropService implements OnInit {
         this._addCoords = this.getCoords(element);
     }
 
-    get deleteCoords(): ICoords {
+    get deleteCoords(): Coords {
         return this._deleteCoords;
     }
 
-    get addCoords(): ICoords {
+    get addCoords(): Coords {
         return this._addCoords;
     }
 
-    public isIntersect(e: MouseEvent, coords: ICoords): boolean {
+    public isIntersect(e: MouseEvent, coords: Coords): boolean {
         return (
             e.pageY <= coords.top + 50 &&
             e.pageX <= coords.left + 50 &&
@@ -50,12 +50,14 @@ export class DragNDropService implements OnInit {
     }
 
     private newTaskCreating: Subject<MouseEvent> = new Subject<MouseEvent>();
-    public newTaskCreating$: Observable<MouseEvent> = this.newTaskCreating.asObservable();
+    public newTaskCreating$: Observable<
+        MouseEvent
+    > = this.newTaskCreating.asObservable();
     public sendNewTaskCreating(e: MouseEvent): void {
         this.newTaskCreating.next(e);
     }
 
-    public setShift(e: MouseEvent, coords: ICoords): void {
+    public setShift(e: MouseEvent, coords: Coords): void {
         this.shiftX = e.pageX - coords.left;
         this.shiftY = e.pageY - coords.top;
     }
