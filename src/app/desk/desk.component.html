@@ -2,15 +2,13 @@
     class="card"
     *ngFor="let card of taskCards; let i = index"
     [style.position]="'absolute'"
-    [style.width]="'350px'"
+    [style.width]="cardWidth+'px'"
     [style.top]="card.top"
     [style.left]="card.left"
+    [style.zIndex]="(card.zIndex ? card.zIndex : '')"
     [id]="card.id"
 >
-    <div
-        class="card-header"
-        (mousedown)="onMouseDown($event, i)"
-    >
+    <div class="card-header" (mousedown)="onMouseDown($event, i)">
         {{ card.name }}
     </div>
     <nym-task [tasks]="card.tasks"> </nym-task>

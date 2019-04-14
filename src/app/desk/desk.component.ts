@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { ITaskCard } from '../model/itaskcard';
 import { DeskDataService } from '../services/desk-data.service';
 import { DragNDropService } from '../services/drag-n-drop.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'nym-desk',
@@ -11,6 +12,21 @@ import { DragNDropService } from '../services/drag-n-drop.service';
 export class DeskComponent implements OnInit {
     private taskCards: ITaskCard[] = [];
     private maxZIndex: number = 0;
+    private subscription: Subscription;
+    private cardWidth: number = 350;
+    private cardHeight: number = 50;
+    private getNewCard(top: number, left: number): ITaskCard {
+        return {
+            id: 'uniqueID',
+            name: 'New task',
+            tasks: [],
+            top: top + 'px',
+            left: left + 'px',
+            zIndex: ++this.maxZIndex,
+            isNew: true,
+            isDrag: true,
+        };
+    }
 
     @HostListener('document:mousemove', ['$event'])
     private onMouseMove(e: MouseEvent): void {
@@ -38,10 +54,30 @@ export class DeskComponent implements OnInit {
     constructor(
         private deskDataService: DeskDataService,
         private dragNDropService: DragNDropService
-    ) {}
+    ) {
+        this.subscription = dragNDropService.newTaskCreating$.subscribe((e: MouseEvent) => {
+            this.taskCards.push(
+                this.getNewCard(
+                    e.pageY - this.cardHeight / 2,
+                    e.pageX - this.cardWidth / 2
+                )
+            );
+            dragNDropService.currentIndex = this.taskCards.length - 1;
+            dragNDropService.currentCard = this.taskCards[
+                dragNDropService.currentIndex
+            ];
+
+            this.dragNDropService.shiftX = this.cardWidth / 2;
+            this.dragNDropService.shiftY = this.cardHeight / 2;
+        });
+    }
 
     public ngOnInit(): void {
         this.taskCards = this.deskDataService.getData();
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     private onMouseDown(e: MouseEvent, index: number): boolean {
@@ -54,23 +90,35 @@ export class DeskComponent implements OnInit {
         this.maxZIndex++;
         target.parentNode.style.zIndex = this.maxZIndex.toString();
 
-        const coords: {
-            top: number;
-            left: number;
-        } = this.dragNDropService.getCoords(target);
-
-        this.dragNDropService.shiftX = e.pageX - coords.left;
-        this.dragNDropService.shiftY = e.pageY - coords.top;
+        this.dragNDropService.setShift(
+            e,
+            this.dragNDropService.getCoords(target)
+        );
 
         return false;
     }
 
     @HostListener('document:mouseup', ['$event'])
     private onMouseUp(e: MouseEvent): void {
-        if (
-            e.pageY <= this.dragNDropService.deleteCoords.top + 50 &&
-            e.pageX <= this.dragNDropService.deleteCoords.left + 50 &&
-            e.pageX >= this.dragNDropService.deleteCoords.left
+        if (!this.dragNDropService.currentCard) {
+            return;
+        }
+        else if (
+            this.dragNDropService.isIntersect(
+                e,
+                this.dragNDropService.deleteCoords
+            ) &&
+            this.dragNDropService.currentCard.isDrag
+        ) {
+            this.dragNDropService.currentCard = undefined;
+            this.taskCards.splice(this.dragNDropService.currentIndex, 1);
+        } else if (
+            this.dragNDropService.isIntersect(
+                e,
+                this.dragNDropService.addCoords
+            ) &&
+            this.dragNDropService.currentCard.isDrag &&
+            this.dragNDropService.currentCard.isNew
         ) {
             this.dragNDropService.currentCard = undefined;
             this.taskCards.splice(this.dragNDropService.currentIndex, 1);

@@ -10,8 +10,11 @@ export class NavbarComponent implements OnInit {
     constructor(private dragNDropService: DragNDropService) {}
 
     public ngOnInit(): void {
-        this.dragNDropService.deleteCoords = this.dragNDropService.getCoords(
-            document.querySelector('#delete')
-        );
+        this.dragNDropService.setDeleteCoords(document.querySelector('#delete'));
+        this.dragNDropService.setAddCoords(document.querySelector('#add'));
+    }
+
+    private onAddTask(e: MouseEvent): void {
+        this.dragNDropService.sendNewTaskCreating(e);
     }
 }

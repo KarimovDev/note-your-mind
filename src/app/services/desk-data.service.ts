@@ -13,8 +13,8 @@ export class DeskDataService {
                     { name: 'Do 2', date: new Date('10.01.2015') },
                     { name: 'Do 3', date: new Date('10.23.2018') },
                 ],
-                top: "150px",
-                left: "50px",
+                top: '150px',
+                left: '50px',
             },
             {
                 id: '2',
@@ -24,8 +24,8 @@ export class DeskDataService {
                     { name: 'Do 22', date: new Date('10.01.2015') },
                     { name: 'Do 33', date: new Date('10.23.2018') },
                 ],
-                top: "350px",
-                left: "230px",
+                top: '350px',
+                left: '230px',
             },
             {
                 id: '3',
@@ -35,8 +35,8 @@ export class DeskDataService {
                     { name: 'Do 222', date: new Date('10.01.2015') },
                     { name: 'Do 333', date: new Date('10.23.2018') },
                 ],
-                top: "650px",
-                left: "360px",
+                top: '650px',
+                left: '360px',
             },
         ];
     }

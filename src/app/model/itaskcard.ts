@@ -6,5 +6,7 @@ export interface ITaskCard {
     top?: string;
     left?: string;
     isDrag?: boolean;
+    isNew?: boolean;
+    zIndex?: number;
     tasks: Array<ITask>;
 }
