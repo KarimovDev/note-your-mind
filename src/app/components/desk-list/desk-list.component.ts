@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Desk } from 'src/app/model/desk.model';
+import { Desk } from 'src/app/models/desk.model';
 import { DeskDataService } from 'src/app/services/desk-data.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { DeskDataService } from 'src/app/services/desk-data.service';
     styleUrls: ['./desk-list.component.scss'],
 })
 export class DeskListComponent implements OnInit {
-    private desks: Desk[] = [];
+    public desks: Desk[] = [];
 
     constructor(private deskDataService: DeskDataService) {}
 

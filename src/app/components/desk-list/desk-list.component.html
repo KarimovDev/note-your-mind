@@ -5,12 +5,9 @@
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let desk of desks; let index">
-                <a
-                    [routerLink]="desk.id"
-                    href="#"
-                    class="main-link"
-                    >{{desk.name}}</a
-                >
+                <a [routerLink]="'desk/'+desk.id.toString()" href="#" class="main-link">{{
+                    desk.name
+                }}</a>
             </li>
         </ul>
     </div>

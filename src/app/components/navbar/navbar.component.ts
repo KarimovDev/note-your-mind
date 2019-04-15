@@ -8,7 +8,10 @@ import { Router } from '@angular/router';
     styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
-    constructor(private dragNDropService: DragNDropService, private router: Router) {}
+    constructor(
+        private dragNDropService: DragNDropService,
+        private router: Router
+    ) {}
 
     public ngOnInit(): void {
         this.dragNDropService.setDeleteCoords(

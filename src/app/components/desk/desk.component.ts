@@ -25,6 +25,7 @@ export class DeskComponent implements OnInit {
             top: top + 'px',
             left: left + 'px',
             zIndex: ++this.maxZIndex,
+            opacity: 0.5,
             isNew: true,
             isDrag: true,
         };
@@ -97,12 +98,11 @@ export class DeskComponent implements OnInit {
     private onMouseDown(e: MouseEvent, index: number): boolean {
         this.dragNDropService.currentCard = this.taskCards[index];
         this.dragNDropService.currentCard.isDrag = true;
+        this.dragNDropService.currentCard.zIndex = ++this.maxZIndex;
+        this.dragNDropService.currentCard.opacity = 0.5;
         this.dragNDropService.currentIndex = index;
 
         const target: any = e.target;
-
-        this.maxZIndex++;
-        target.parentNode.style.zIndex = this.maxZIndex.toString();
 
         this.dragNDropService.setShift(
             e,
@@ -123,6 +123,7 @@ export class DeskComponent implements OnInit {
             ) &&
             this.dragNDropService.currentCard.isDrag
         ) {
+            this.dragNDropService.currentCard.isDrag = false;
             this.dragNDropService.currentCard = undefined;
             this.taskCards.splice(this.dragNDropService.currentIndex, 1);
         } else if (
@@ -133,10 +134,13 @@ export class DeskComponent implements OnInit {
             this.dragNDropService.currentCard.isDrag &&
             this.dragNDropService.currentCard.isNew
         ) {
+            this.dragNDropService.currentCard.isDrag = false;
             this.dragNDropService.currentCard = undefined;
             this.taskCards.splice(this.dragNDropService.currentIndex, 1);
         } else {
+            this.dragNDropService.currentCard.opacity = 1;
             this.dragNDropService.currentCard.isDrag = false;
+            this.dragNDropService.currentCard.isNew = false;
         }
     }
 }

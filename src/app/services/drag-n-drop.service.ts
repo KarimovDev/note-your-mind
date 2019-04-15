@@ -4,7 +4,7 @@ import { Subject, Observable } from 'rxjs';
 import { Coords } from '../models/coords.model';
 
 @Injectable()
-export class DragNDropService implements OnInit {
+export class DragNDropService {
     public currentCard: TaskCard;
     private _addCoords: any;
     private _deleteCoords: any;

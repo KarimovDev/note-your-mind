@@ -14,7 +14,14 @@ import { DeskListComponent } from './components/desk-list/desk-list.component';
 
 registerLocaleData(localeRu, 'ru');
 @NgModule({
-    declarations: [AppComponent, DeskComponent, TaskComponent, NavbarComponent, NotFoundComponent, DeskListComponent],
+    declarations: [
+        AppComponent,
+        DeskComponent,
+        TaskComponent,
+        NavbarComponent,
+        NotFoundComponent,
+        DeskListComponent,
+    ],
     imports: [BrowserModule, AppRoutingModule],
     providers: [
         DeskDataService,

@@ -8,5 +8,6 @@ export interface TaskCard {
     isDrag?: boolean;
     isNew?: boolean;
     zIndex?: number;
+    opacity?: number;
     tasks: Array<Task>;
 }

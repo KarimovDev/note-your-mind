@@ -9,7 +9,7 @@ const routes: Routes = [
         path: '',
         children: [
             {
-                path: ':id',
+                path: 'desk/:id',
                 component: DeskComponent,
             },
             {
