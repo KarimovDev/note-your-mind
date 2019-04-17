@@ -9,7 +9,7 @@ export class DeskDataService {
             case '1':
                 return [
                     {
-                        id: '1',
+                        _id: '1',
                         name: 'Tasks 1',
                         tasks: [
                             { name: 'Do 1', date: new Date('10.04.2015') },
@@ -20,7 +20,7 @@ export class DeskDataService {
                         left: '50px',
                     },
                     {
-                        id: '2',
+                        _id: '2',
                         name: 'Tasks 2',
                         tasks: [
                             { name: 'Do 11', date: new Date('10.04.2015') },
@@ -31,7 +31,7 @@ export class DeskDataService {
                         left: '230px',
                     },
                     {
-                        id: '3',
+                        _id: '3',
                         name: 'Tasks 3',
                         tasks: [
                             { name: 'Do 111', date: new Date('10.04.2015') },
@@ -45,7 +45,7 @@ export class DeskDataService {
             case '2':
                 return [
                     {
-                        id: '1',
+                        _id: '1',
                         name: 'Tasks 1',
                         tasks: [
                             { name: 'Do qwd1', date: new Date('10.04.2015') },
@@ -56,7 +56,7 @@ export class DeskDataService {
                         left: '50px',
                     },
                     {
-                        id: '2',
+                        _id: '2',
                         name: 'Tasks 2',
                         tasks: [
                             { name: 'Do 1231', date: new Date('10.04.2015') },
@@ -67,7 +67,7 @@ export class DeskDataService {
                         left: '230px',
                     },
                     {
-                        id: '3',
+                        _id: '3',
                         name: 'Tasks 3',
                         tasks: [
                             {
@@ -90,7 +90,7 @@ export class DeskDataService {
             case '3':
                 return [
                     {
-                        id: '1',
+                        _id: '1',
                         name: 'Tasks 1',
                         tasks: [
                             { name: 'Do 1qer', date: new Date('10.04.2015') },
@@ -101,7 +101,7 @@ export class DeskDataService {
                         left: '20px',
                     },
                     {
-                        id: '2',
+                        _id: '2',
                         name: 'Tasks 2',
                         tasks: [
                             { name: 'Do 11qewr', date: new Date('10.04.2015') },
@@ -112,7 +112,7 @@ export class DeskDataService {
                         left: '350px',
                     },
                     {
-                        id: '3',
+                        _id: '3',
                         name: 'Tasks 3',
                         tasks: [
                             { name: 'Do asdasd', date: new Date('10.04.2015') },
@@ -123,20 +123,22 @@ export class DeskDataService {
                         left: '160px',
                     },
                 ];
+            default:
+                return [];
         }
     }
     public getDesks(): Desk[] {
         return [
             {
-                id: '1',
+                _id: '1',
                 name: 'Desk 1',
             },
             {
-                id: '2',
+                _id: '2',
                 name: 'Desk 2',
             },
             {
-                id: '3',
+                _id: '3',
                 name: 'Desk 3',
             },
         ];

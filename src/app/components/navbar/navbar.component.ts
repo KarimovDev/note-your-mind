@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DragNDropService } from '../../services/drag-n-drop.service';
 import { Router } from '@angular/router';
+import { DraggableService } from 'src/app/services/draggable.service';
 
 @Component({
     selector: 'nym-navbar',
@@ -9,19 +9,19 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent implements OnInit {
     constructor(
-        private dragNDropService: DragNDropService,
+        private draggable: DraggableService,
         private router: Router
     ) {}
 
     public ngOnInit(): void {
-        this.dragNDropService.setDeleteCoords(
+        this.draggable.setDeleteCoords(
             document.querySelector('#delete')
         );
-        this.dragNDropService.setAddCoords(document.querySelector('#add'));
+        this.draggable.setAddCoords(document.querySelector('#add'));
     }
 
     private onAddTask(e: MouseEvent): void {
-        this.dragNDropService.sendNewTaskCreating(e);
+        this.draggable.sendNewTaskCreating(e);
     }
 
     private openDesksList(): void {

@@ -1,7 +1,8 @@
 import { Task } from './task.model';
 
 export interface TaskCard {
-    id: string;
+    _id: string;
+    _deskId?: string;
     name: string;
     top?: string;
     left?: string;

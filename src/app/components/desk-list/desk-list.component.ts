@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Desk } from 'src/app/models/desk.model';
-import { DeskDataService } from 'src/app/services/desk-data.service';
+import { DeskHttpService } from 'src/app/services/desk-http.service';
+import { DeskDto } from 'src/app/models/deskDto.model';
+import { MongoResponse } from 'src/app/models/mongo-response.model';
 
 @Component({
     selector: 'nym-desk-list',
@@ -10,9 +12,36 @@ import { DeskDataService } from 'src/app/services/desk-data.service';
 export class DeskListComponent implements OnInit {
     public desks: Desk[] = [];
 
-    constructor(private deskDataService: DeskDataService) {}
+    constructor(private deskHttp: DeskHttpService) {}
 
     public ngOnInit(): void {
-        this.desks = this.deskDataService.getDesks();
+        this.deskHttp.getDesksList().subscribe(
+            (res: DeskDto): void => {
+                if (res && res.status === 200) {
+                    this.desks = res.data;
+                }
+            },
+            (error: Error) => {
+                // TODO here will be popup message
+                // console.log(error);
+            }
+        );
+    }
+
+    public addLine(e: string): void {
+        this.deskHttp.addDesk(e).subscribe(
+            (res: MongoResponse) => {
+                if (res && res.result.ok) {
+                    this.desks = [...this.desks, ...res.ops];
+                } else {
+                    // TODO here will be popup message
+                    // console.log(res);
+                }
+            },
+            (error: Error) => {
+                // TODO here will be popup message
+                // console.log(error);
+            }
+        );
     }
 }

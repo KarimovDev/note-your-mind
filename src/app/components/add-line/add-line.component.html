@@ -1,0 +1,25 @@
+<form [formGroup]="form" (submit)="onSubmit()">
+    <div class="form-group">
+        <input
+            type="text"
+            class="form-control"
+            [class.is-invalid]="
+                form.get('title').invalid && form.get('title').touched
+            "
+            [formControlName]="'title'"
+            placeholder="Name"
+        />
+        <div class="invalid-feedback">
+            <span *ngIf="getErrors('title')?.required">Required</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <button
+            type="submit"
+            [disabled]="form.pristine || form.invalid"
+            class="btn btn-success btn-block"
+        >
+            Add
+        </button>
+    </div>
+</form>

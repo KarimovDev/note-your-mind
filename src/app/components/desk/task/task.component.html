@@ -4,7 +4,11 @@
             <div
                 class="d-flex justify-content-between align-items-center preview-title"
             >
-                {{ task.name }}
+                <input
+                    type="text"
+                    class="form-control-plaintext"
+                    [value]="task.name"
+                />
                 <span class="badge badge-secondary"
                     >{{ task.date | date }}
                 </span>

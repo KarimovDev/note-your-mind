@@ -1,10 +1,11 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { TaskCard } from '../../models/taskcard.model';
-import { DeskDataService } from '../../services/desk-data.service';
-import { DragNDropService } from '../../services/drag-n-drop.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
+import { DeskHttpService } from 'src/app/services/desk-http.service';
+import { TaskDto } from 'src/app/models/taskDto.model';
+import { DraggableService } from 'src/app/services/draggable.service';
 
 @Component({
     selector: 'nym-desk',
@@ -12,14 +13,14 @@ import { map, switchMap } from 'rxjs/operators';
     styleUrls: ['./desk.component.scss'],
 })
 export class DeskComponent implements OnInit {
-    private taskCards: TaskCard[] = [];
+    public taskCards: TaskCard[] = [];
     private maxZIndex: number = 0;
     private subscription: Subscription;
-    private cardWidth: number = 350;
+    public cardWidth: number = 350;
     private cardHeight: number = 50;
     private getNewCard(top: number, left: number): TaskCard {
         return {
-            id: 'uniqueID',
+            _id: 'uniqueID',
             name: 'New task',
             tasks: [],
             top: top + 'px',
@@ -34,17 +35,17 @@ export class DeskComponent implements OnInit {
     @HostListener('document:mousemove', ['$event'])
     private onMouseMove(e: MouseEvent): void {
         if (
-            this.dragNDropService.currentCard &&
-            this.dragNDropService.currentCard.isDrag
+            this.draggable.currentCard &&
+            this.draggable.currentCard.isDrag
         ) {
-            this.dragNDropService.currentCard.top =
-                e.pageY - this.dragNDropService.shiftY + 'px';
-            this.dragNDropService.currentCard.left =
-                e.pageX - this.dragNDropService.shiftX + 'px';
+            this.draggable.currentCard.top =
+                e.pageY - this.draggable.shiftY + 'px';
+            this.draggable.currentCard.left =
+                e.pageX - this.draggable.shiftX + 'px';
         }
     }
 
-    @HostListener('document:selectstart')
+    /*@HostListener('document:selectstart')
     private onSelectStart(): boolean {
         return false;
     }
@@ -52,14 +53,14 @@ export class DeskComponent implements OnInit {
     @HostListener('document:mousedown')
     private onMouseDownDoc(): boolean {
         return false;
-    }
+    }*/
 
     constructor(
-        private deskDataService: DeskDataService,
-        private dragNDropService: DragNDropService,
-        private route: ActivatedRoute
+        private draggable: DraggableService,
+        private route: ActivatedRoute,
+        private httpDesk: DeskHttpService
     ) {
-        this.subscription = dragNDropService.newTaskCreating$.subscribe(
+        this.subscription = draggable.newTaskCreating$.subscribe(
             (e: MouseEvent) => {
                 this.taskCards.push(
                     this.getNewCard(
@@ -67,13 +68,13 @@ export class DeskComponent implements OnInit {
                         e.pageX - this.cardWidth / 2
                     )
                 );
-                dragNDropService.currentIndex = this.taskCards.length - 1;
-                dragNDropService.currentCard = this.taskCards[
-                    dragNDropService.currentIndex
+                draggable.currentIndex = this.taskCards.length - 1;
+                draggable.currentCard = this.taskCards[
+                    draggable.currentIndex
                 ];
 
-                this.dragNDropService.shiftX = this.cardWidth / 2;
-                this.dragNDropService.shiftY = this.cardHeight / 2;
+                this.draggable.shiftX = this.cardWidth / 2;
+                this.draggable.shiftY = this.cardHeight / 2;
             }
         );
     }
@@ -82,13 +83,21 @@ export class DeskComponent implements OnInit {
         this.route.paramMap
             .pipe(
                 map((paramMap: ParamMap) => paramMap.get('id')),
-                switchMap((id: string) => this.deskDataService.getData(id))
+                switchMap((id: string) => this.httpDesk.getTasks(id))
             )
-            .subscribe((desk: TaskCard) => {
-                if (desk) {
-                    this.taskCards.push(desk);
+            .subscribe(
+                (res: TaskDto): void => {
+                    if (res) {
+                        if (res.status === 200) {
+                            this.taskCards = res.data;
+                        }
+                    }
+                },
+                (error: Error) => {
+                    // TODO here will be popup message
+                    // console.log(error);
                 }
-            });
+            );
     }
 
     public ngOnDestroy(): void {
@@ -96,51 +105,55 @@ export class DeskComponent implements OnInit {
     }
 
     private onMouseDown(e: MouseEvent, index: number): boolean {
-        this.dragNDropService.currentCard = this.taskCards[index];
-        this.dragNDropService.currentCard.isDrag = true;
-        this.dragNDropService.currentCard.zIndex = ++this.maxZIndex;
-        this.dragNDropService.currentCard.opacity = 0.5;
-        this.dragNDropService.currentIndex = index;
+        this.draggable.currentCard = this.taskCards[index];
+        this.draggable.currentCard.isDrag = true;
+        this.draggable.currentCard.zIndex = ++this.maxZIndex;
+        this.draggable.currentCard.opacity = 0.5;
+        this.draggable.currentIndex = index;
 
-        const target: any = e.target;
+        const target: any = (e.target as Element).parentNode.parentNode;
 
-        this.dragNDropService.setShift(
+        this.draggable.setShift(
             e,
-            this.dragNDropService.getCoords(target)
+            this.draggable.getCoords(target)
         );
 
         return false;
     }
 
+    public addLine(e: string, i: number): void {
+        this.taskCards[i].tasks.push({ name: e, date: new Date() });
+    }
+
     @HostListener('document:mouseup', ['$event'])
     private onMouseUp(e: MouseEvent): void {
-        if (!this.dragNDropService.currentCard) {
+        if (!this.draggable.currentCard) {
             return;
         } else if (
-            this.dragNDropService.isIntersect(
+            this.draggable.isIntersect(
                 e,
-                this.dragNDropService.deleteCoords
+                this.draggable.deleteCoords
             ) &&
-            this.dragNDropService.currentCard.isDrag
+            this.draggable.currentCard.isDrag
         ) {
-            this.dragNDropService.currentCard.isDrag = false;
-            this.dragNDropService.currentCard = undefined;
-            this.taskCards.splice(this.dragNDropService.currentIndex, 1);
+            this.draggable.currentCard.isDrag = false;
+            this.draggable.currentCard = undefined;
+            this.taskCards.splice(this.draggable.currentIndex, 1);
         } else if (
-            this.dragNDropService.isIntersect(
+            this.draggable.isIntersect(
                 e,
-                this.dragNDropService.addCoords
+                this.draggable.addCoords
             ) &&
-            this.dragNDropService.currentCard.isDrag &&
-            this.dragNDropService.currentCard.isNew
+            this.draggable.currentCard.isDrag &&
+            this.draggable.currentCard.isNew
         ) {
-            this.dragNDropService.currentCard.isDrag = false;
-            this.dragNDropService.currentCard = undefined;
-            this.taskCards.splice(this.dragNDropService.currentIndex, 1);
+            this.draggable.currentCard.isDrag = false;
+            this.draggable.currentCard = undefined;
+            this.taskCards.splice(this.draggable.currentIndex, 1);
         } else {
-            this.dragNDropService.currentCard.opacity = 1;
-            this.dragNDropService.currentCard.isDrag = false;
-            this.dragNDropService.currentCard.isNew = false;
+            this.draggable.currentCard.opacity = 1;
+            this.draggable.currentCard.isDrag = false;
+            this.draggable.currentCard.isNew = false;
         }
     }
 }

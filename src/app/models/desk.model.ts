@@ -1,5 +1,4 @@
 export interface Desk {
-    id: string;
+    _id: string;
     name: string;
-    active?: boolean;
 }

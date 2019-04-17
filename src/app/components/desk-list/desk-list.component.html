@@ -5,10 +5,16 @@
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let desk of desks; let index">
-                <a [routerLink]="'desk/'+desk.id.toString()" href="#" class="main-link">{{
-                    desk.name
-                }}</a>
+                <a
+                    [routerLink]="'desk/' + desk._id.toString()"
+                    href="#"
+                    class="main-link"
+                    >{{ desk.name }}</a
+                >
             </li>
         </ul>
+        <div class="card-body">
+            <nym-add-line (addLine)="addLine($event)"></nym-add-line>
+        </div>
     </div>
 </div>

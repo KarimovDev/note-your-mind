@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DragNDropService } from './drag-n-drop.service';
+import { DraggableService } from './draggable.service';
 
 describe('DragNDropService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     it('should be created', () => {
-        const service: DragNDropService = TestBed.get(DragNDropService);
+        const service: DraggableService = TestBed.get(DraggableService);
 
         expect(service).toBeTruthy();
     });

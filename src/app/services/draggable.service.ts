@@ -4,7 +4,7 @@ import { Subject, Observable } from 'rxjs';
 import { Coords } from '../models/coords.model';
 
 @Injectable()
-export class DragNDropService {
+export class DraggableService {
     public currentCard: TaskCard;
     private _addCoords: any;
     private _deleteCoords: any;
@@ -44,8 +44,8 @@ export class DragNDropService {
         const box: any = elem.getBoundingClientRect();
 
         return {
-            top: box.top + pageYOffset,
-            left: box.left + pageXOffset,
+            top: box.top + pageYOffset - 12,
+            left: box.left + pageXOffset - 20,
         };
     }
 

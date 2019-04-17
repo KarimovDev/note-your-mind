@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ITask } from 'src/app/model/itask';
+import { Task } from 'src/app/models/task.model';
 
 @Component({
     selector: 'nym-task',
@@ -7,7 +7,7 @@ import { ITask } from 'src/app/model/itask';
     styleUrls: ['./task.component.scss'],
 })
 export class TaskComponent implements OnInit {
-    @Input() public tasks: ITask[];
+    @Input() public tasks: Task[];
 
     constructor() {}
 
