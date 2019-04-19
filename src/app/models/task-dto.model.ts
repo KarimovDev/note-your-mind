@@ -1,4 +1,4 @@
-import { TaskCard } from './taskcard.model';
+import { TaskCard } from './task-card.model';
 
 export interface TaskDto {
     status: number;

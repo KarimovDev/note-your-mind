@@ -10,5 +10,5 @@ export interface TaskCard {
     isNew?: boolean;
     zIndex?: number;
     opacity?: number;
-    tasks: Array<Task>;
+    tasks: Task[];
 }

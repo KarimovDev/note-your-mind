@@ -1,5 +1,5 @@
 import { Injectable, OnInit, HostListener } from '@angular/core';
-import { TaskCard } from '../models/taskcard.model';
+import { TaskCard } from '../models/task-card.model';
 import { Subject, Observable } from 'rxjs';
 import { Coords } from '../models/coords.model';
 
@@ -11,6 +11,8 @@ export class DraggableService {
     public shiftX: number;
     public shiftY: number;
     public currentIndex: number;
+    private marginTop: number = 12;
+    public marginLeft: number = 20;
 
     public setDeleteCoords(element: Element): void {
         this._deleteCoords = this.getCoords(element);
@@ -30,9 +32,9 @@ export class DraggableService {
 
     public isIntersect(e: MouseEvent, coords: Coords): boolean {
         return (
-            e.pageY <= coords.top + 50 &&
-            e.pageX <= coords.left + 50 &&
-            e.pageX >= coords.left
+            e.pageY <= coords.top + 50 + this.marginTop &&
+            e.pageX <= coords.left + 50 + this.marginLeft &&
+            e.pageX >= coords.left + this.marginLeft
         );
     }
 
@@ -44,8 +46,8 @@ export class DraggableService {
         const box: any = elem.getBoundingClientRect();
 
         return {
-            top: box.top + pageYOffset - 12,
-            left: box.left + pageXOffset - 20,
+            top: box.top + pageYOffset - this.marginTop,
+            left: box.left + pageXOffset - this.marginLeft,
         };
     }
 

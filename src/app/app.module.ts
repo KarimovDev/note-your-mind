@@ -14,6 +14,7 @@ import { DeskHttpService } from './services/desk-http.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AddLineModule } from './components/add-line/add-line.module';
 import { DraggableService } from './services/draggable.service';
+import { AppStateService } from './services/app-state.service';
 
 registerLocaleData(localeRu, 'ru');
 @NgModule({
@@ -30,6 +31,7 @@ registerLocaleData(localeRu, 'ru');
         DeskDataService,
         DeskHttpService,
         DraggableService,
+        AppStateService,
         {
             provide: LOCALE_ID,
             useValue: 'ru',

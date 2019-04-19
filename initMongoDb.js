@@ -2,6 +2,7 @@ const MongoClient = require('mongodb').MongoClient;
 const serverIP = '78.155.218.226';
 const serverPort = '27017';
 const baseName = 'nym';
+const ObjectId = require('mongodb').ObjectId;
 
 const connection = closure => {
     return MongoClient.connect(
@@ -40,48 +41,75 @@ const initDb = () => {
                         ],
                         () => {
                             console.log('Desks inited');
-                            initTasks(client.db(baseName));
+                            client
+                                .db(baseName)
+                                .collection('desks')
+                                .stats()
+                                .then(stats => {
+                                    initTasks(
+                                        client.db(baseName),
+                                        client,
+                                        stats.count
+                                    );
+                                });
                         }
                     )
             );
     });
 };
 
-const initTasks = db => {
+const initTasks = (db, client, count) => {
     let counter = 1;
-    return db
-        .collection('desks')
-        .find()
-        .forEach(el => {
-            db.collection('tasks').insertMany(
-                [
-                    {
-                        _deskId: el._id,
-                        name: `Tasks ${counter}`,
-                        tasks: [
+    new Promise((resolve, reject) => {
+        console.log(count);
+        const checkDone = () => {
+            count -= 1;
+            console.log(count);
+            if (count === 0) {
+                resolve('Job is done');
+            }
+        };
+
+        db.collection('desks')
+            .find()
+            .forEach(el => {
+                new Promise((resolve, reject) => {
+                    db.collection('tasks').insertMany(
+                        [
                             {
-                                name: `Do ${counter}${counter}`,
-                                date: new Date('10.04.2015'),
-                            },
-                            {
-                                name: `Do ${counter}${counter}`,
-                                date: new Date('10.01.2015'),
-                            },
-                            {
-                                name: `Do ${counter}${counter}`,
-                                date: new Date('10.23.2018'),
+                                _deskId: ObjectId(el._id),
+                                name: `Tasks ${counter}`,
+                                tasks: [
+                                    {
+                                        name: `Do ${counter}${counter}`,
+                                        date: new Date('10.04.2015'),
+                                    },
+                                    {
+                                        name: `Do ${counter}${counter}`,
+                                        date: new Date('10.01.2015'),
+                                    },
+                                    {
+                                        name: `Do ${counter}${counter}`,
+                                        date: new Date('10.23.2018'),
+                                    },
+                                ],
+                                top: `${150 * counter}px`,
+                                left: `${50 * counter}px`,
                             },
                         ],
-                        top: `${150 * counter}px`,
-                        left: `${50 * counter}px`,
-                    },
-                ],
-                () => {
-                    console.log(`Tasks inited`);
-                }
-            );
-            counter++;
-        });
+                        (err, res) => {
+                            console.log(`Tasks inited`);
+                            if (err) reject(err);
+                            resolve(res);
+                        }
+                    );
+                }).then(checkDone);
+                counter++;
+            });
+    }).then(result => {
+        console.log(result);
+        client.close();
+    });
 };
 
 initDb();

@@ -1,11 +1,13 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { TaskCard } from '../../models/taskcard.model';
+import { TaskCard } from '../../models/task-card.model';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { map, switchMap } from 'rxjs/operators';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { DeskHttpService } from 'src/app/services/desk-http.service';
-import { TaskDto } from 'src/app/models/taskDto.model';
+import { TaskDto } from 'src/app/models/task-dto.model';
 import { DraggableService } from 'src/app/services/draggable.service';
+import { AppStateService } from 'src/app/services/app-state.service';
+import { MongoResponse } from 'src/app/models/mongo-response.model';
+import { Desk } from 'src/app/models/desk.model';
 
 @Component({
     selector: 'nym-desk',
@@ -14,13 +16,15 @@ import { DraggableService } from 'src/app/services/draggable.service';
 })
 export class DeskComponent implements OnInit {
     public taskCards: TaskCard[] = [];
+    private deletedCardsIds: string[] = [];
     private maxZIndex: number = 0;
-    private subscription: Subscription;
+    private subscription: Subscription[] = [];
     public cardWidth: number = 350;
     private cardHeight: number = 50;
     private getNewCard(top: number, left: number): TaskCard {
         return {
-            _id: 'uniqueID',
+            _id: undefined,
+            _deskId: this.appState.currentDesk._id,
             name: 'New task',
             tasks: [],
             top: top + 'px',
@@ -34,10 +38,7 @@ export class DeskComponent implements OnInit {
 
     @HostListener('document:mousemove', ['$event'])
     private onMouseMove(e: MouseEvent): void {
-        if (
-            this.draggable.currentCard &&
-            this.draggable.currentCard.isDrag
-        ) {
+        if (this.draggable.currentCard && this.draggable.currentCard.isDrag) {
             this.draggable.currentCard.top =
                 e.pageY - this.draggable.shiftY + 'px';
             this.draggable.currentCard.left =
@@ -58,10 +59,12 @@ export class DeskComponent implements OnInit {
     constructor(
         private draggable: DraggableService,
         private route: ActivatedRoute,
-        private httpDesk: DeskHttpService
+        private httpDesk: DeskHttpService,
+        private router: Router,
+        private appState: AppStateService
     ) {
-        this.subscription = draggable.newTaskCreating$.subscribe(
-            (e: MouseEvent) => {
+        this.subscription.push(
+            draggable.newTaskCreating$.subscribe((e: MouseEvent) => {
                 this.taskCards.push(
                     this.getNewCard(
                         e.pageY - this.cardHeight / 2,
@@ -69,23 +72,45 @@ export class DeskComponent implements OnInit {
                     )
                 );
                 draggable.currentIndex = this.taskCards.length - 1;
-                draggable.currentCard = this.taskCards[
-                    draggable.currentIndex
-                ];
+                draggable.currentCard = this.taskCards[draggable.currentIndex];
 
                 this.draggable.shiftX = this.cardWidth / 2;
                 this.draggable.shiftY = this.cardHeight / 2;
-            }
+            })
+        );
+        this.subscription.push(
+            appState.newSaving$.subscribe(() => {
+                this.httpDesk
+                    .saveTasks(this.taskCards, this.deletedCardsIds)
+                    .subscribe(
+                        (res: MongoResponse) => {
+                            if (res) {
+                                // TODO here will be popup message
+                            } else {
+                                // TODO here will be popup message
+                            }
+                        },
+                        (error: Error) => {
+                            // TODO here will be popup message
+                        }
+                    );
+            })
         );
     }
 
     public ngOnInit(): void {
-        this.route.paramMap
-            .pipe(
-                map((paramMap: ParamMap) => paramMap.get('id')),
-                switchMap((id: string) => this.httpDesk.getTasks(id))
-            )
-            .subscribe(
+        const id: string = this.route.snapshot.paramMap.get('id');
+
+        this.appState.currentDesk = undefined;
+
+        this.appState.desks.forEach((el: Desk) => {
+            if (el._id === id) {
+                this.appState.currentDesk = el;
+            }
+        });
+
+        if (this.appState.currentDesk) {
+            this.httpDesk.getTasks(id).subscribe(
                 (res: TaskDto): void => {
                     if (res) {
                         if (res.status === 200) {
@@ -95,13 +120,15 @@ export class DeskComponent implements OnInit {
                 },
                 (error: Error) => {
                     // TODO here will be popup message
-                    // console.log(error);
                 }
             );
+        } else {
+            this.router.navigate(['']);
+        }
     }
 
     public ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.subscription.forEach((el: Subscription) => el.unsubscribe());
     }
 
     private onMouseDown(e: MouseEvent, index: number): boolean {
@@ -113,10 +140,7 @@ export class DeskComponent implements OnInit {
 
         const target: any = (e.target as Element).parentNode.parentNode;
 
-        this.draggable.setShift(
-            e,
-            this.draggable.getCoords(target)
-        );
+        this.draggable.setShift(e, this.draggable.getCoords(target));
 
         return false;
     }
@@ -130,20 +154,15 @@ export class DeskComponent implements OnInit {
         if (!this.draggable.currentCard) {
             return;
         } else if (
-            this.draggable.isIntersect(
-                e,
-                this.draggable.deleteCoords
-            ) &&
+            this.draggable.isIntersect(e, this.draggable.deleteCoords) &&
             this.draggable.currentCard.isDrag
         ) {
+            this.deletedCardsIds.push(this.draggable.currentCard._id);
             this.draggable.currentCard.isDrag = false;
             this.draggable.currentCard = undefined;
             this.taskCards.splice(this.draggable.currentIndex, 1);
         } else if (
-            this.draggable.isIntersect(
-                e,
-                this.draggable.addCoords
-            ) &&
+            this.draggable.isIntersect(e, this.draggable.addCoords) &&
             this.draggable.currentCard.isDrag &&
             this.draggable.currentCard.isNew
         ) {
