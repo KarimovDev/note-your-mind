@@ -3,10 +3,9 @@ import { TaskCard } from '../../models/task-card.model';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { DeskHttpService } from 'src/app/services/desk-http.service';
-import { TaskDto } from 'src/app/models/task-dto.model';
 import { DraggableService } from 'src/app/services/draggable.service';
 import { AppStateService } from 'src/app/services/app-state.service';
-import { MongoResponse } from 'src/app/models/mongo-response.model';
+import { MongoDto } from 'src/app/models/mongo-dto.model';
 import { Desk } from 'src/app/models/desk.model';
 
 @Component({
@@ -83,7 +82,7 @@ export class DeskComponent implements OnInit {
                 this.httpDesk
                     .saveTasks(this.taskCards, this.deletedCardsIds)
                     .subscribe(
-                        (res: MongoResponse) => {
+                        (res: MongoDto) => {
                             if (res) {
                                 // TODO here will be popup message
                             } else {
@@ -111,10 +110,10 @@ export class DeskComponent implements OnInit {
 
         if (this.appState.currentDesk) {
             this.httpDesk.getTasks(id).subscribe(
-                (res: TaskDto): void => {
+                (res: MongoDto): void => {
                     if (res) {
                         if (res.status === 200) {
-                            this.taskCards = res.data;
+                            this.taskCards = res.data as TaskCard[];
                         }
                     }
                 },

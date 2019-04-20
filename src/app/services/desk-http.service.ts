@@ -1,53 +1,75 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DeskDto } from '../models/desk-dto.model';
-import { TaskDto } from '../models/task-dto.model';
-import { MongoResponse } from '../models/mongo-response.model';
+import { MongoDto } from '../models/mongo-dto.model';
 import { TaskCard } from '../models/task-card.model';
 
 @Injectable()
 export class DeskHttpService {
     constructor(private http: HttpClient) {}
 
-    public getDesksList(): Observable<DeskDto> {
-        return this.http.get<DeskDto>(`http://localhost:3000/api/desks`);
-    }
-
-    public getTasks(id: string): Observable<TaskDto> {
+    public getDesksList(id: string): Observable<MongoDto> {
         const params: HttpParams = new HttpParams().set('id', id);
         const options: { params: HttpParams } = { params: params };
 
-        return this.http.get<TaskDto>(
+        return this.http.get<MongoDto>(
+            `http://localhost:3000/api/desks`,
+            options
+        );
+    }
+
+    public getTasks(id: string): Observable<MongoDto> {
+        const params: HttpParams = new HttpParams().set('id', id);
+        const options: { params: HttpParams } = { params: params };
+
+        return this.http.get<MongoDto>(
             `http://localhost:3000/api/tasks`,
             options
         );
     }
 
-    public addDesk(name: string): Observable<MongoResponse> {
-        return this.http.post<MongoResponse>(
-            `http://localhost:3000/api/desks`,
-            {
-                name: name,
-            }
+    public getUser(email: string, pass: string): Observable<MongoDto> {
+        let params: HttpParams = new HttpParams();
+        const options: { params: HttpParams } = { params: params };
+
+        params = params.append('email', email);
+        params = params.append('pass', pass);
+
+        return this.http.get<MongoDto>(
+            `http://localhost:3000/api/users`,
+            options
         );
+    }
+
+    public addDesk(id: string, name: string): Observable<MongoDto> {
+        return this.http.post<MongoDto>(`http://localhost:3000/api/desks`, {
+            _userId: id,
+            name: name,
+        });
+    }
+
+    public addUser(email: string, pass: string): Observable<MongoDto> {
+        return this.http.post<MongoDto>(`http://localhost:3000/api/users`, {
+            email: email,
+            pass: pass,
+        });
     }
 
     public saveTasks(
         taskCards: TaskCard[],
         deletedCardsIds: string[]
-    ): Observable<MongoResponse> {
-        return this.http.post<MongoResponse>(
-            `http://localhost:3000/api/tasks`,
-            { taskCards: taskCards, deletedCardsIds: deletedCardsIds }
-        );
+    ): Observable<MongoDto> {
+        return this.http.post<MongoDto>(`http://localhost:3000/api/tasks`, {
+            taskCards: taskCards,
+            deletedCardsIds: deletedCardsIds,
+        });
     }
 
-    public deleteDesk(id: string): Observable<MongoResponse> {
+    public deleteDesk(id: string): Observable<MongoDto> {
         const params: HttpParams = new HttpParams().set('id', id);
         const options: { params: HttpParams } = { params: params };
 
-        return this.http.delete<MongoResponse>(
+        return this.http.delete<MongoDto>(
             `http://localhost:3000/api/desks`,
             options
         );

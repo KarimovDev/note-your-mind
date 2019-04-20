@@ -13,19 +13,14 @@ export class AuthService {
     constructor(private router: Router) {}
 
     public logout(): void {
-        const userEmpty: User = null;
+        const userEmpty: User = undefined;
 
         this.user.next(userEmpty);
         this.router.navigate(['login']);
     }
 
     public newUser$: Observable<User> = this.user.asObservable();
-    public sendLogining(): void {
-        const userLoggedIn: User = {
-            _id: '1',
-            email: '1@1.ru',
-        };
-
-        this.user.next(userLoggedIn);
+    public sendLogining(user: User): void {
+        this.user.next(user);
     }
 }

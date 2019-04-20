@@ -24,11 +24,9 @@ export class AuthGuard implements CanActivate {
             take(1),
             map((user: User) => {
                 if (!!user) {
-                    //this.router.navigate(['desks']);
                     return true;
                 }
 
-                //this.authService.redirectUrl = state.url;
                 this.router.navigate(['login']);
 
                 return false;

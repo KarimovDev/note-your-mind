@@ -26,31 +26,53 @@ const initDb = () => {
                 console.log('DB droped'),
                 client
                     .db(baseName)
-                    .collection('desks')
-                    .insertMany(
-                        [
-                            {
-                                name: 'desk_1',
-                            },
-                            {
-                                name: 'desk_2',
-                            },
-                            {
-                                name: 'desk_3',
-                            },
-                        ],
+                    .collection('users')
+                    .insertOne(
+                        {
+                            email: 'test@test.test',
+                            pass: 'test123',
+                        },
                         () => {
-                            console.log('Desks inited');
+                            console.log('User inited');
                             client
                                 .db(baseName)
-                                .collection('desks')
-                                .stats()
-                                .then(stats => {
-                                    initTasks(
-                                        client.db(baseName),
-                                        client,
-                                        stats.count
-                                    );
+                                .collection('users')
+                                .find()
+                                .toArray()
+                                .then(res => {
+                                    client
+                                        .db(baseName)
+                                        .collection('desks')
+                                        .insertMany(
+                                            [
+                                                {
+                                                    _userId: res[0]._id,
+                                                    name: 'desk_1',
+                                                },
+                                                {
+                                                    _userId: res[0]._id,
+                                                    name: 'desk_2',
+                                                },
+                                                {
+                                                    _userId: res[0]._id,
+                                                    name: 'desk_3',
+                                                },
+                                            ],
+                                            () => {
+                                                console.log('Desks inited');
+                                                client
+                                                    .db(baseName)
+                                                    .collection('desks')
+                                                    .stats()
+                                                    .then(stats => {
+                                                        initTasks(
+                                                            client.db(baseName),
+                                                            client,
+                                                            stats.count
+                                                        );
+                                                    });
+                                            }
+                                        );
                                 });
                         }
                     )

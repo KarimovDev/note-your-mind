@@ -23,30 +23,53 @@ const connection = closure => {
 };
 
 const sendError = (err, res) => {
-    response.status = 501;
-    response.message = typeof err == 'object' ? err.message : err;
-    res.status(501).json(response);
+    resAns = response();
+    resAns.status = 520;
+    resAns.message = typeof err == 'object' ? err.message : err;
+    res.status(520).json(resAns);
 };
 
-let response = {
-    status: 200,
-    data: [],
-    message: null,
+const response = () => {
+    return {
+        result: { ok: 1 },
+        status: 200,
+        data: [],
+        message: null,
+    };
 };
+
+router.get('/users', (req, res) => {
+    connection(db => {
+        db.collection('users')
+            .find({
+                email: req.query.email,
+                pass: req.query.pass,
+            })
+            .toArray()
+            .then(users => {
+                resAns = response();
+                if (users.length === 0) resAns.status = 404;
+                resAns.data = users;
+                res.json(resAns);
+            })
+            .catch(err => {
+                sendError(err, res);
+            });
+    });
+});
 
 router.get('/desks', (req, res) => {
     connection(db => {
         db.collection('desks')
-            .find()
+            .find({
+                _userId: ObjectId(req.query.id),
+            })
             .toArray()
             .then(desks => {
-                if (desks.length === 0) {
-                    response.status = 204;
-                } else {
-                    response.status = 200;
-                }
-                response.data = desks;
-                res.json(response);
+                resAns = response();
+                if (desks.length === 0) resAns.status = 204;
+                resAns.data = desks;
+                res.json(resAns);
             })
             .catch(err => {
                 sendError(err, res);
@@ -56,13 +79,49 @@ router.get('/desks', (req, res) => {
 
 router.post('/desks', (req, res) => {
     connection(db => {
-        db.collection('desks').insertMany([{ name: req.body.name }], function(
-            err,
-            result
-        ) {
-            if (err) sendError(err, res);
-            else res.json(result);
-        });
+        db.collection('desks').insertMany(
+            [{ _userId: ObjectId(req.body._userId), name: req.body.name }],
+            function(err, result) {
+                if (err) sendError(err, res);
+                else {
+                    resAns = response();
+                    resAns.data = result.ops;
+                    resAns.result = result.result;
+                    res.json(resAns);
+                }
+            }
+        );
+    });
+});
+
+router.post('/users', (req, res) => {
+    connection(db => {
+        db.collection('users')
+            .find({ email: req.body.email })
+            .toArray()
+            .then(user => {
+                if (user.length === 0) {
+                    connection(db => {
+                        db.collection('users').insertMany(
+                            [{ email: req.body.email, pass: req.body.pass }],
+                            function(err, result) {
+                                if (err) sendError(err, res);
+                                else {
+                                    resAns = response();
+                                    resAns.data = result.ops;
+                                    resAns.result = result.result;
+                                    res.json(resAns);
+                                }
+                            }
+                        );
+                    });
+                } else {
+                    resAns = response();
+                    resAns.message = 'Such user is already exists';
+                    resAns.status = 409;
+                    res.json(resAns);
+                }
+            });
     });
 });
 
@@ -116,9 +175,10 @@ router.delete('/desks', (req, res) => {
                 })
                 .then(checkDone);
         }).then(result => {
-            response.status = 200;
-            response.data = result;
-            res.json(response);
+            resAns = response();
+            resAns.status = 200;
+            resAns.data = result;
+            res.json(resAns);
         });
     });
 });
@@ -131,13 +191,14 @@ router.get('/tasks', (req, res) => {
             })
             .toArray()
             .then(tasks => {
+                resAns = response();
                 if (tasks.length === 0) {
-                    response.status = 204;
+                    resAns.status = 204;
                 } else {
-                    response.status = 200;
+                    resAns.status = 200;
                 }
-                response.data = tasks;
-                res.json(response);
+                resAns.data = tasks;
+                res.json(resAns);
             })
             .catch(err => {
                 sendError(err, res);
@@ -205,9 +266,10 @@ router.post('/tasks', (req, res) => {
                     .then(checkDone);
             });
         }).then(result => {
-            response.status = 200;
-            response.data = result;
-            res.json(response);
+            resAns = response();
+            resAns.status = 200;
+            resAns.data = result;
+            res.json(resAns);
         });
     });
 });
