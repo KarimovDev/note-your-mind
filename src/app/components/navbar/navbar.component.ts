@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DraggableService } from 'src/app/services/draggable.service';
-import { AppStateService } from 'src/app/services/app-state.service';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { DraggableService } from '../../services/draggable.service';
+import { AppStateService } from '../../services/app-state.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
     selector: 'nym-navbar',

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Desk } from 'src/app/models/desk.model';
-import { DeskHttpService } from 'src/app/services/desk-http.service';
-import { MongoDto } from 'src/app/models/mongo-dto.model';
-import { AppStateService } from 'src/app/services/app-state.service';
-import { User } from 'src/app/models/user.model';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { Desk } from '../../models/desk.model';
+import { DeskHttpService } from '../../services/desk-http.service';
+import { MongoDto } from '../../models/mongo-dto.model';
+import { AppStateService } from '../../services/app-state.service';
+import { User } from '../../models/user.model';
+import { AuthService } from '../../services/auth/auth.service';
 import { take, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 

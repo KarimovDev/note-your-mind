@@ -7,10 +7,10 @@ import {
     Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { User } from 'src/app/models/user.model';
-import { DeskHttpService } from 'src/app/services/desk-http.service';
+import { User } from '../../models/user.model';
+import { DeskHttpService } from '../../services/desk-http.service';
 import { Subscription } from 'rxjs';
-import { MongoDto } from 'src/app/models/mongo-dto.model';
+import { MongoDto } from '../../models/mongo-dto.model';
 
 const USER_NOT_FOUND_ERROR: string = 'auth/user-not-found';
 const DEFAULT: string = 'DEFAULT';

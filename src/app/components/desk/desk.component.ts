@@ -2,11 +2,11 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { TaskCard } from '../../models/task-card.model';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { DeskHttpService } from 'src/app/services/desk-http.service';
-import { DraggableService } from 'src/app/services/draggable.service';
-import { AppStateService } from 'src/app/services/app-state.service';
-import { MongoDto } from 'src/app/models/mongo-dto.model';
-import { Desk } from 'src/app/models/desk.model';
+import { DeskHttpService } from '../../services/desk-http.service';
+import { DraggableService } from '../../services/draggable.service';
+import { AppStateService } from '../../services/app-state.service';
+import { MongoDto } from '../../models/mongo-dto.model';
+import { Desk } from '../../models/desk.model';
 
 @Component({
     selector: 'nym-desk',
