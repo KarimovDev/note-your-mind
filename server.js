@@ -5,11 +5,13 @@ const http = require('http');
 const cors = require('cors');
 const app = express();
 
-const allowedOrigins = ['http://localhost:4200', 'http://78.155.218.226:3000'];
+const allowedOrigins = ['http://localhost:4200'];
 
 app.use(
     cors({
         origin: function(origin, callback) {
+            // while testing from stackblitz
+            return callback(null, true);
             if (!origin) return callback(null, true);
             if (allowedOrigins.indexOf(origin) === -1) {
                 var msg =

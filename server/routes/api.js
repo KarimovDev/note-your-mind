@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
-const serverIP = '78.155.218.226';
-const serverPort = '27017';
+const mongoIp = '78.155.218.226';
+const mongoPort = '27017';
 const baseName = 'nym';
 
 const connection = closure => {
     return MongoClient.connect(
-        `mongodb://${serverIP}:${serverPort}`,
+        `mongodb://${mongoIp}:${mongoPort}`,
         { useNewUrlParser: true },
         (err, client) => {
             if (err) return console.log(err);
@@ -47,7 +47,6 @@ router.get('/users', (req, res) => {
             })
             .toArray()
             .then(users => {
-                console.log(user);
                 resAns = response();
                 if (users.length === 0) resAns.status = 404;
                 resAns.data = users;
