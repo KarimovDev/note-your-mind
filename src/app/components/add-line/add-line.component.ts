@@ -12,6 +12,8 @@ import {
     styleUrls: ['./add-line.component.scss'],
 })
 export class AddLineComponent implements OnInit {
+    public submited: boolean = false;
+
     @Output() private addLine: EventEmitter<string> = new EventEmitter<
         string
     >();
@@ -31,6 +33,14 @@ export class AddLineComponent implements OnInit {
     }
 
     public onSubmit(): void {
+        if (this.form.invalid) {
+            this.submited = true;
+
+            return;
+        } else {
+            this.submited = false;
+        }
+
         this.addLine.emit(this.form.value.title);
 
         this.form.reset();

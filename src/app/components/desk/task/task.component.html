@@ -1,9 +1,7 @@
 <ul class="list-group list-group-flush">
     <div *ngFor="let task of tasks; let i = index">
         <li class="list-group-item delete-block">
-            <div
-                class="d-flex justify-content-between align-items-center"
-            >
+            <div class="d-flex justify-content-between align-items-center">
                 <input
                     type="text"
                     class="form-control-plaintext input-block"
@@ -12,7 +10,10 @@
                 <span class="badge badge-secondary date-block"
                     >{{ task.date | date }}
                 </span>
-                <nym-delete-button class="delete-button" (click)="onDeleteClick(i)"></nym-delete-button>
+                <nym-delete-button
+                    class="delete-button"
+                    (click)="onDeleteClick(i)"
+                ></nym-delete-button>
             </div>
         </li>
     </div>

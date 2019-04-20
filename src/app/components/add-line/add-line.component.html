@@ -3,9 +3,7 @@
         <input
             type="text"
             class="form-control"
-            [class.is-invalid]="
-                form.get('title').invalid && form.get('title').touched
-            "
+            [class.is-invalid]="form.get('title').invalid && submited"
             [formControlName]="'title'"
             placeholder="Name"
         />
@@ -14,11 +12,7 @@
         </div>
     </div>
     <div class="form-group">
-        <button
-            type="submit"
-            [disabled]="form.pristine || form.invalid"
-            class="btn btn-success btn-block"
-        >
+        <button type="submit" class="btn btn-success btn-block">
             Add
         </button>
     </div>
