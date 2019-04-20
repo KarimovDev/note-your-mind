@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MongoDto } from '../models/mongo-dto.model';
 import { TaskCard } from '../models/task-card.model';
+import { serverIp, serverPort } from '../constants/backend.const';
 
 @Injectable()
 export class DeskHttpService {
@@ -13,7 +14,7 @@ export class DeskHttpService {
         const options: { params: HttpParams } = { params: params };
 
         return this.http.get<MongoDto>(
-            `http://localhost:3000/api/desks`,
+            `http://${serverIp}:${serverPort}/api/desks`,
             options
         );
     }
@@ -23,7 +24,7 @@ export class DeskHttpService {
         const options: { params: HttpParams } = { params: params };
 
         return this.http.get<MongoDto>(
-            `http://localhost:3000/api/tasks`,
+            `http://${serverIp}:${serverPort}/api/tasks`,
             options
         );
     }
@@ -36,20 +37,20 @@ export class DeskHttpService {
         params = params.append('pass', pass);
 
         return this.http.get<MongoDto>(
-            `http://localhost:3000/api/users`,
+            `http://${serverIp}:${serverPort}/api/users`,
             options
         );
     }
 
     public addDesk(id: string, name: string): Observable<MongoDto> {
-        return this.http.post<MongoDto>(`http://localhost:3000/api/desks`, {
+        return this.http.post<MongoDto>(`http://${serverIp}:${serverPort}/api/desks`, {
             _userId: id,
             name: name,
         });
     }
 
     public addUser(email: string, pass: string): Observable<MongoDto> {
-        return this.http.post<MongoDto>(`http://localhost:3000/api/users`, {
+        return this.http.post<MongoDto>(`http://${serverIp}:${serverPort}/api/users`, {
             email: email,
             pass: pass,
         });
@@ -59,7 +60,7 @@ export class DeskHttpService {
         taskCards: TaskCard[],
         deletedCardsIds: string[]
     ): Observable<MongoDto> {
-        return this.http.post<MongoDto>(`http://localhost:3000/api/tasks`, {
+        return this.http.post<MongoDto>(`http://${serverIp}:${serverPort}/api/tasks`, {
             taskCards: taskCards,
             deletedCardsIds: deletedCardsIds,
         });
@@ -70,7 +71,7 @@ export class DeskHttpService {
         const options: { params: HttpParams } = { params: params };
 
         return this.http.delete<MongoDto>(
-            `http://localhost:3000/api/desks`,
+            `http://${serverIp}:${serverPort}/api/desks`,
             options
         );
     }
