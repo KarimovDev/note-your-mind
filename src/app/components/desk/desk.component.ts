@@ -7,6 +7,7 @@ import { DraggableService } from '../../services/draggable.service';
 import { AppStateService } from '../../services/app-state.service';
 import { MongoDto } from '../../models/mongo-dto.model';
 import { Desk } from '../../models/desk.model';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
     selector: 'nym-desk',
@@ -55,12 +56,19 @@ export class DeskComponent implements OnInit {
         return false;
     }*/
 
+    private showPopup(message: string): void {
+        this.snackBar.open(message, 'OK', {
+            duration: 3000,
+        });
+    }
+
     constructor(
         private draggable: DraggableService,
         private route: ActivatedRoute,
         private httpDesk: DeskHttpService,
         private router: Router,
-        private appState: AppStateService
+        private appState: AppStateService,
+        private snackBar: MatSnackBar
     ) {
         this.subscription.push(
             draggable.newTaskCreating$.subscribe((e: MouseEvent) => {
@@ -83,14 +91,14 @@ export class DeskComponent implements OnInit {
                     .saveTasks(this.taskCards, this.deletedCardsIds)
                     .subscribe(
                         (res: MongoDto) => {
-                            if (res) {
-                                // TODO here will be popup message
+                            if (res.status === 200) {
+                                this.showPopup('Saved');
                             } else {
-                                // TODO here will be popup message
+                                this.showPopup(res.message);
                             }
                         },
                         (error: Error) => {
-                            // TODO here will be popup message
+                            this.showPopup(error.message);
                         }
                     );
             })
@@ -118,7 +126,7 @@ export class DeskComponent implements OnInit {
                     }
                 },
                 (error: Error) => {
-                    // TODO here will be popup message
+                    this.showPopup(error.message);
                 }
             );
         } else {

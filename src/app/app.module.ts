@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, LOCALE_ID } from '@angular/core';
 import { AppRoutingModule } from './routing/app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,6 +18,7 @@ import { AppStateService } from './services/app-state.service';
 import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
 import { LoginModule } from './components/login/login.module';
 import { IntroComponent } from './components/intro/intro.component';
+import { UiKitModule } from './shared-modules/ui-kit.module';
 
 registerLocaleData(localeRu, 'ru');
 @NgModule({
@@ -36,6 +38,8 @@ registerLocaleData(localeRu, 'ru');
         HttpClientModule,
         AddLineModule,
         LoginModule,
+        BrowserAnimationsModule,
+        UiKitModule,
     ],
     providers: [
         DeskHttpService,

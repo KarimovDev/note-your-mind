@@ -7,6 +7,7 @@ import { User } from '../../models/user.model';
 import { AuthService } from '../../services/auth/auth.service';
 import { take, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
     selector: 'nym-desk-list',
@@ -21,8 +22,15 @@ export class DeskListComponent implements OnInit {
     constructor(
         private httpDesk: DeskHttpService,
         private appState: AppStateService,
-        private authService: AuthService
+        private authService: AuthService,
+        private snackBar: MatSnackBar
     ) {}
+
+    private showPopup(message: string): void {
+        this.snackBar.open(message, 'OK', {
+            duration: 3000,
+        });
+    }
 
     public ngOnInit(): void {
         this.subscription.push(
@@ -38,7 +46,7 @@ export class DeskListComponent implements OnInit {
                             }
                         },
                         (error: Error) => {
-                            // TODO here will be popup message
+                            this.showPopup(error.message);
                         }
                     )
                 );
@@ -54,15 +62,15 @@ export class DeskListComponent implements OnInit {
         this.subscription.push(
             this.httpDesk.addDesk(this.currentUser._id, name).subscribe(
                 (res: MongoDto) => {
-                    if (res && res.result.ok) {
+                    if (res.status === 200) {
                         this.desks = [...this.desks, ...(res.data as Desk[])];
                         this.appState.desks = this.desks;
                     } else {
-                        // TODO here will be popup message
+                        this.showPopup(res.message);
                     }
                 },
                 (error: Error) => {
-                    // TODO here will be popup message
+                    this.showPopup(error.message);
                 }
             )
         );
@@ -74,16 +82,16 @@ export class DeskListComponent implements OnInit {
         this.subscription.push(
             this.httpDesk.deleteDesk(id).subscribe(
                 (res: MongoDto) => {
-                    if (res) {
-                        // TODO here will be popup message
+                    if (res.status === 200) {
+                        this.showPopup('Desk has deleted');
                         this.desks.splice(index, 1);
                         this.appState.desks = this.desks;
                     } else {
-                        // TODO here will be popup message
+                        this.showPopup(res.message);
                     }
                 },
                 (error: Error) => {
-                    // TODO here will be popup message
+                    this.showPopup(error.message);
                 }
             )
         );

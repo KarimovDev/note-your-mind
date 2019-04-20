@@ -11,13 +11,7 @@ import { User } from '../../models/user.model';
 import { DeskHttpService } from '../../services/desk-http.service';
 import { Subscription } from 'rxjs';
 import { MongoDto } from '../../models/mongo-dto.model';
-
-const USER_NOT_FOUND_ERROR: string = 'auth/user-not-found';
-const DEFAULT: string = 'DEFAULT';
-const ERROR_MESSAGE: any = {
-    [DEFAULT]: 'Неизвестная ошибка. Попробуйте позже',
-    [USER_NOT_FOUND_ERROR]: 'Неверные имя пользователя и пароль',
-};
+import { MatSnackBar } from '@angular/material';
 
 @Component({
     selector: 'tfs-login',
@@ -33,7 +27,8 @@ export class LoginComponent implements OnInit {
         private authService: AuthService,
         private formBuilder: FormBuilder,
         private router: Router,
-        private httpDesk: DeskHttpService
+        private httpDesk: DeskHttpService,
+        private snackBar: MatSnackBar
     ) {}
 
     public ngOnInit(): void {
@@ -67,6 +62,12 @@ export class LoginComponent implements OnInit {
         return this.form.get('password');
     }
 
+    private showPopup(message: string): void {
+        this.snackBar.open(message, 'OK', {
+            duration: 3000,
+        });
+    }
+
     public signUp(): void {
         const email: string = this.form.value.email;
         const pass: string = this.form.value.password;
@@ -74,14 +75,14 @@ export class LoginComponent implements OnInit {
         this.subscription.push(
             this.httpDesk.addUser(email, pass).subscribe(
                 (res: MongoDto) => {
-                    if (res && res.result.ok) {
+                    if (res.status === 200) {
                         this.authService.sendLogining(res.data[0] as User);
                     } else {
-                        // TODO here will be popup message
+                        this.showPopup(res.message);
                     }
                 },
                 (error: Error) => {
-                    // TODO here will be popup message
+                    this.showPopup(error.message);
                 }
             )
         );
@@ -100,14 +101,14 @@ export class LoginComponent implements OnInit {
         this.subscription.push(
             this.httpDesk.getUser(email, pass).subscribe(
                 (res: MongoDto): void => {
-                    if (res && res.status === 200) {
+                    if (res.status === 200) {
                         this.authService.sendLogining(res.data[0] as User);
                     } else {
-                        // TODO here will be popup message
+                        this.showPopup(res.message);
                     }
                 },
                 (error: Error) => {
-                    // TODO here will be popup message
+                    this.showPopup(error.message);
                 }
             )
         );
