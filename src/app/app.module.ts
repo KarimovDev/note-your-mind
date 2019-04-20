@@ -16,6 +16,8 @@ import { AddLineModule } from './components/add-line/add-line.module';
 import { DraggableService } from './services/draggable.service';
 import { AppStateService } from './services/app-state.service';
 import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
+import { LoginModule } from './components/login/login.module';
+import { IntroComponent } from './components/intro/intro.component';
 
 registerLocaleData(localeRu, 'ru');
 @NgModule({
@@ -27,8 +29,15 @@ registerLocaleData(localeRu, 'ru');
         NotFoundComponent,
         DeskListComponent,
         DeleteButtonComponent,
+        IntroComponent,
     ],
-    imports: [BrowserModule, AppRoutingModule, HttpClientModule, AddLineModule],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        AddLineModule,
+        LoginModule,
+    ],
     providers: [
         DeskDataService,
         DeskHttpService,

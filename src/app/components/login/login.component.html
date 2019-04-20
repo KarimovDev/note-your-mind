@@ -1,0 +1,56 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="title">Вход</h1>
+            <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+                {{ errorMessage }}
+            </div>
+            <form [formGroup]="form" (submit)="submit()">
+                <div class="form-group">
+                    <label for="emailLogin">Электропочта</label>
+                    <input
+                        type="email"
+                        formControlName="email"
+                        class="form-control"
+                        [class.is-invalid]="email.invalid && email.touched"
+                        id="emailLogin"
+                        aria-describedby="email"
+                        placeholder="Ваш адрес"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input
+                        type="password"
+                        formControlName="password"
+                        autocomplete="off"
+                        class="form-control"
+                        [class.is-invalid]="
+                            password.invalid && password.touched
+                        "
+                        id="password"
+                        placeholder="Ваш пароль"
+                    />
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button
+                        type="submit"
+                        [disabled]="form.invalid"
+                        class="btn btn-primary"
+                    >
+                        Войти
+                    </button>
+                    <span class="btn">или</span>
+                    <button
+                        type="button"
+                        (click)="signUp()"
+                        [disabled]="form.invalid"
+                        class="btn btn-success"
+                    >
+                        Зарегистрироваться
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

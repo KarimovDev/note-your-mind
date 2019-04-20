@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DraggableService } from 'src/app/services/draggable.service';
 import { AppStateService } from 'src/app/services/app-state.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
     selector: 'nym-navbar',
@@ -12,7 +13,8 @@ export class NavbarComponent implements OnInit {
     constructor(
         private draggable: DraggableService,
         private router: Router,
-        private appState: AppStateService
+        private appState: AppStateService,
+        private authService: AuthService,
     ) {}
 
     public ngOnInit(): void {
@@ -25,7 +27,11 @@ export class NavbarComponent implements OnInit {
     }
 
     private openDesksList(): void {
-        this.router.navigate(['']);
+        this.router.navigate(['/desks']);
+    }
+
+    private logout(): void {
+        this.authService.logout();
     }
 
     private onSaveClick(): void {

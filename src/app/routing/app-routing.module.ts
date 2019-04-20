@@ -3,13 +3,21 @@ import { Routes, RouterModule } from '@angular/router';
 import { NotFoundComponent } from '../components/not-found/not-found.component';
 import { DeskComponent } from '../components/desk/desk.component';
 import { DeskListComponent } from '../components/desk-list/desk-list.component';
+import { LoginComponent } from '../components/login/login.component';
+import { AuthGuard } from '../services/auth/auth.guard';
+import { IntroComponent } from '../components/intro/intro.component';
 
 const routes: Routes = [
     {
-        path: '',
+        path: 'login',
+        component: LoginComponent,
+    },
+    {
+        path: 'desks',
+        canActivate: [AuthGuard],
         children: [
             {
-                path: 'desk/:id',
+                path: 'desks/:id',
                 component: DeskComponent,
             },
             {
@@ -17,6 +25,10 @@ const routes: Routes = [
                 component: DeskListComponent,
             },
         ],
+    },
+    {
+        path: '',
+        component: IntroComponent,
     },
     {
         path: '**',
