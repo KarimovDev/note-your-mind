@@ -14,7 +14,7 @@ export class NavbarComponent implements OnInit {
         private draggable: DraggableService,
         private router: Router,
         private appState: AppStateService,
-        private authService: AuthService,
+        private authService: AuthService
     ) {}
 
     public ngOnInit(): void {

@@ -48,9 +48,7 @@ export class LoginComponent implements OnInit {
         });
     }
 
-    public signUp(): void {
-
-    }
+    public signUp(): void {}
 
     public submit(): void {
         if (this.form.invalid) {

@@ -5,7 +5,6 @@ import { AppComponent } from './app.component';
 import { DeskComponent } from './components/desk/desk.component';
 import { TaskComponent } from './components/desk/task/task.component';
 import localeRu from '@angular/common/locales/ru';
-import { DeskDataService } from './services/desk-data.service';
 import { registerLocaleData } from '@angular/common';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
@@ -39,7 +38,6 @@ registerLocaleData(localeRu, 'ru');
         LoginModule,
     ],
     providers: [
-        DeskDataService,
         DeskHttpService,
         DraggableService,
         AppStateService,
