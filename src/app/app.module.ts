@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AddLineModule } from './components/add-line/add-line.module';
 import { DraggableService } from './services/draggable.service';
 import { AppStateService } from './services/app-state.service';
+import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
 
 registerLocaleData(localeRu, 'ru');
 @NgModule({
@@ -25,6 +26,7 @@ registerLocaleData(localeRu, 'ru');
         NavbarComponent,
         NotFoundComponent,
         DeskListComponent,
+        DeleteButtonComponent,
     ],
     imports: [BrowserModule, AppRoutingModule, HttpClientModule, AddLineModule],
     providers: [

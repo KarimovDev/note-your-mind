@@ -6,10 +6,10 @@ import { Task } from 'src/app/models/task.model';
     templateUrl: './task.component.html',
     styleUrls: ['./task.component.scss'],
 })
-export class TaskComponent implements OnInit {
+export class TaskComponent {
     @Input() public tasks: Task[];
 
-    constructor() {}
-
-    public ngOnInit(): void {}
+    public onDeleteClick(index: number): void {
+        this.tasks.splice(index, 1);
+    }
 }

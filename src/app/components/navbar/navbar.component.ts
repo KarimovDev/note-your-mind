@@ -9,7 +9,11 @@ import { AppStateService } from 'src/app/services/app-state.service';
     styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
-    constructor(private draggable: DraggableService, private router: Router, private appState: AppStateService) {}
+    constructor(
+        private draggable: DraggableService,
+        private router: Router,
+        private appState: AppStateService
+    ) {}
 
     public ngOnInit(): void {
         this.draggable.setDeleteCoords(document.querySelector('#delete'));

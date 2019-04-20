@@ -8,17 +8,17 @@
                 class="list-group-item delete-block"
                 *ngFor="let desk of desks; let i = index"
             >
-                <a
-                    [routerLink]="'desk/' + desk._id.toString()"
-                    href="#"
-                    class="main-link"
-                    >{{ desk.name }}
-                </a>
-                <span
-                    class="badge badge-danger delete-btn"
-                    (click)="onDeleteClick(i)"
-                    >&times;</span
-                >
+                <div class="d-flex justify-content-between align-items-center">
+                    <a
+                        [routerLink]="'desk/' + desk._id.toString()"
+                        href="#"
+                        class="main-link"
+                        >{{ desk.name }}
+                    </a>
+                    <nym-delete-button
+                        (click)="onDeleteClick(i)"
+                    ></nym-delete-button>
+                </div>
             </li>
         </ul>
         <div class="card-body">
