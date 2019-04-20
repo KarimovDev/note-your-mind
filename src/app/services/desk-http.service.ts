@@ -31,10 +31,11 @@ export class DeskHttpService {
 
     public getUser(email: string, pass: string): Observable<MongoDto> {
         let params: HttpParams = new HttpParams();
-        const options: { params: HttpParams } = { params: params };
 
         params = params.append('email', email);
         params = params.append('pass', pass);
+
+        const options: { params: HttpParams } = { params: params };
 
         return this.http.get<MongoDto>(
             `http://${serverIp}:${serverPort}/api/users`,
@@ -43,27 +44,36 @@ export class DeskHttpService {
     }
 
     public addDesk(id: string, name: string): Observable<MongoDto> {
-        return this.http.post<MongoDto>(`http://${serverIp}:${serverPort}/api/desks`, {
-            _userId: id,
-            name: name,
-        });
+        return this.http.post<MongoDto>(
+            `http://${serverIp}:${serverPort}/api/desks`,
+            {
+                _userId: id,
+                name: name,
+            }
+        );
     }
 
     public addUser(email: string, pass: string): Observable<MongoDto> {
-        return this.http.post<MongoDto>(`http://${serverIp}:${serverPort}/api/users`, {
-            email: email,
-            pass: pass,
-        });
+        return this.http.post<MongoDto>(
+            `http://${serverIp}:${serverPort}/api/users`,
+            {
+                email: email,
+                pass: pass,
+            }
+        );
     }
 
     public saveTasks(
         taskCards: TaskCard[],
         deletedCardsIds: string[]
     ): Observable<MongoDto> {
-        return this.http.post<MongoDto>(`http://${serverIp}:${serverPort}/api/tasks`, {
-            taskCards: taskCards,
-            deletedCardsIds: deletedCardsIds,
-        });
+        return this.http.post<MongoDto>(
+            `http://${serverIp}:${serverPort}/api/tasks`,
+            {
+                taskCards: taskCards,
+                deletedCardsIds: deletedCardsIds,
+            }
+        );
     }
 
     public deleteDesk(id: string): Observable<MongoDto> {

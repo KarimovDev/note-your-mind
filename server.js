@@ -5,7 +5,7 @@ const http = require('http');
 const cors = require('cors');
 const app = express();
 
-const allowedOrigins = ['http://localhost:4200'];
+const allowedOrigins = ['http://localhost:4200', 'http://78.155.218.226:3000'];
 
 app.use(
     cors({

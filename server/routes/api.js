@@ -47,6 +47,7 @@ router.get('/users', (req, res) => {
             })
             .toArray()
             .then(users => {
+                console.log(user);
                 resAns = response();
                 if (users.length === 0) resAns.status = 404;
                 resAns.data = users;
