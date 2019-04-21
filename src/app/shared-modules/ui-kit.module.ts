@@ -6,7 +6,9 @@ import {
     MatListModule,
     MatCardModule,
     MatSnackBarModule,
+    MatDialogModule,
 } from '@angular/material';
+import { ConfigDialogComponent } from '../components/config-dialog/config-dialog.component';
 
 @NgModule({
     exports: [
@@ -16,6 +18,8 @@ import {
         MatListModule,
         MatCardModule,
         MatSnackBarModule,
+        MatDialogModule
     ],
+    entryComponents: [ConfigDialogComponent],
 })
 export class UiKitModule {}

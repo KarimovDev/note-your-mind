@@ -17,3 +17,7 @@
 @import '~bootstrap/scss/utilities';
 
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.mat-snack-bar-container {
+    max-width: 400px;
+}

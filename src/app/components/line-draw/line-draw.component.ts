@@ -1,5 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { ConnectedTaskCards } from 'src/app/models/connected-task-cards';
+import { MatDialog } from '@angular/material';
+import { ConfigDialogComponent } from '../config-dialog/config-dialog.component';
 
 @Component({
     selector: 'nym-line-draw',
@@ -8,4 +10,25 @@ import { ConnectedTaskCards } from 'src/app/models/connected-task-cards';
 })
 export class LineDrawComponent {
     @Input() public connectedTaskCards: ConnectedTaskCards[];
+    @Output() public deleteLine: EventEmitter<string> = new EventEmitter<
+        string
+    >();
+
+    constructor(public dialog: MatDialog) {}
+
+    public onLineClick(index: number): void {
+        const dialogRef: any = this.dialog.open(ConfigDialogComponent, {
+            width: '160px',
+            data: { name: 'Line config' },
+        });
+
+        dialogRef.afterClosed().subscribe(
+            (result: boolean): void => {
+                if (result) {
+                    this.deleteLine.emit(this.connectedTaskCards[index]._id);
+                    this.connectedTaskCards.splice(index, 1);
+                }
+            }
+        );
+    }
 }

@@ -21,6 +21,7 @@ import { IntroComponent } from './components/intro/intro.component';
 import { UiKitModule } from './shared-modules/ui-kit.module';
 import { LineDrawingService } from './services/line-drawing.service';
 import { LineDrawComponent } from './components/line-draw/line-draw.component';
+import { ConfigDialogComponent } from './components/config-dialog/config-dialog.component';
 
 registerLocaleData(localeRu, 'ru');
 @NgModule({
@@ -34,6 +35,7 @@ registerLocaleData(localeRu, 'ru');
         DeleteButtonComponent,
         IntroComponent,
         LineDrawComponent,
+        ConfigDialogComponent,
     ],
     imports: [
         BrowserModule,

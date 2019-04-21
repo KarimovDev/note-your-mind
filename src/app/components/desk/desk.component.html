@@ -39,4 +39,8 @@
         <nym-add-line (addLine)="addLine($event, i)"></nym-add-line>
     </div>
 </div>
-<nym-line-draw [connectedTaskCards]="connectedTaskCards"></nym-line-draw>
+<nym-line-draw
+    (deleteLine)="onDeleteLine($event)"
+    [style.opacity]="isDragginNow ? 0 : 1"
+    [connectedTaskCards]="connectedTaskCards"
+></nym-line-draw>

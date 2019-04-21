@@ -26,8 +26,11 @@ export class DeskComponent implements OnInit {
     private subscription: Subscription[] = [];
     public cardWidth: number = 350;
     private cardHeight: number = 50;
-    private pressedTaskCards: number;
+    private pressedTaskCard: number;
+    public isDragginNow: boolean = false;
     public connectedTaskCards: ConnectedTaskCards[] = [];
+
+
     private getNewCard(top: number, left: number): TaskCard {
         return {
             _id: UUID.UUID(),
@@ -163,15 +166,17 @@ export class DeskComponent implements OnInit {
     }
 
     private onMouseDown(e: MouseEvent, index: number): boolean {
+        this.isDragginNow = true;
+
         this.draggable.currentCard = this.taskCards[index];
         this.draggable.currentCard.isDrag = true;
         this.draggable.currentCard.zIndex = ++this.maxZIndex;
         this.draggable.currentCard.opacity = 0.5;
         this.draggable.currentIndex = index;
 
-        if (this.pressedTaskCards !== undefined) {
-            this.taskCards[this.pressedTaskCards].isButtonPressed = false;
-            this.pressedTaskCards = undefined;
+        if (this.pressedTaskCard !== undefined) {
+            this.taskCards[this.pressedTaskCard].isButtonPressed = false;
+            this.pressedTaskCard = undefined;
         }
 
         const target: any = (e.target as Element).parentNode.parentNode;
@@ -187,6 +192,8 @@ export class DeskComponent implements OnInit {
 
     @HostListener('document:mouseup', ['$event'])
     private onMouseUp(e: MouseEvent): void {
+        this.isDragginNow = false;
+
         if (!this.draggable.currentCard) {
             return;
         } else if (
@@ -211,7 +218,7 @@ export class DeskComponent implements OnInit {
             this.draggable.currentCard.isNew = false;
         }
 
-        this.changeLineCoords();
+        this.updateLineCoords();
     }
 
     private addLineToDraw(el1: number, el2: number): void {
@@ -248,16 +255,20 @@ export class DeskComponent implements OnInit {
         return false;
     }
 
-    private changeLineCoords(): void {}
+    private updateLineCoords(): void {}
+
+    public onDeleteLine(id: string): void {
+        this.deletedConnIds.push(id);
+    }
 
     public onConnectClick(index: number): void {
-        if (this.pressedTaskCards !== undefined) {
-            this.taskCards[this.pressedTaskCards].isButtonPressed = false;
-            this.addLineToDraw(this.pressedTaskCards, index);
-            this.pressedTaskCards = undefined;
+        if (this.pressedTaskCard !== undefined) {
+            this.taskCards[this.pressedTaskCard].isButtonPressed = false;
+            this.addLineToDraw(this.pressedTaskCard, index);
+            this.pressedTaskCard = undefined;
         } else {
             this.taskCards[index].isButtonPressed = true;
-            this.pressedTaskCards = index;
+            this.pressedTaskCard = index;
         }
     }
 }

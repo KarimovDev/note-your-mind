@@ -1,0 +1,4 @@
+<h4>{{ data.name }}</h4>
+<p>Delete this?</p>
+<button class="btn btn-dark" (click)="onNoClick()" cdkFocusInitial>X</button>
+<button mat-button class="btn btn-danger" [mat-dialog-close]="true">✓</button>

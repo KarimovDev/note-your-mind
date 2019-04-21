@@ -6,8 +6,8 @@ import { Coords } from '../models/coords.model';
 @Injectable()
 export class DraggableService {
     public currentCard: TaskCard;
-    private _addCoords: any;
-    private _deleteCoords: any;
+    public addCoords: Coords;
+    public deleteCoords: Coords;
     public shiftX: number;
     public shiftY: number;
     public currentIndex: number;
@@ -15,19 +15,11 @@ export class DraggableService {
     public marginLeft: number = 20;
 
     public setDeleteCoords(element: Element): void {
-        this._deleteCoords = this.getCoords(element);
+        this.deleteCoords = this.getCoords(element);
     }
 
     public setAddCoords(element: Element): void {
-        this._addCoords = this.getCoords(element);
-    }
-
-    get deleteCoords(): Coords {
-        return this._deleteCoords;
-    }
-
-    get addCoords(): Coords {
-        return this._addCoords;
+        this.addCoords = this.getCoords(element);
     }
 
     public isIntersect(e: MouseEvent, coords: Coords): boolean {
@@ -37,10 +29,6 @@ export class DraggableService {
             e.pageX >= coords.left + this.marginLeft
         );
     }
-
-    constructor() {}
-
-    public ngOnInit(): void {}
 
     public getCoords(elem: Element): Coords {
         const box: ClientRect = elem.getBoundingClientRect();
