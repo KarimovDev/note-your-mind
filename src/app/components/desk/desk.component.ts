@@ -30,7 +30,6 @@ export class DeskComponent implements OnInit {
     public isDragginNow: boolean = false;
     public connectedTaskCards: ConnectedTaskCards[] = [];
 
-
     private getNewCard(top: number, left: number): TaskCard {
         return {
             _id: UUID.UUID(),
@@ -240,6 +239,7 @@ export class DeskComponent implements OnInit {
 
             this.connectedTaskCards.push({
                 _id: UUID.UUID(),
+                color: 'blue',
                 _deskId: this.appState.currentDesk._id,
                 el1: selector1,
                 coords1: coords1,

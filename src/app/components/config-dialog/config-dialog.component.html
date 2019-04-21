@@ -1,4 +1,20 @@
 <h4>{{ data.name }}</h4>
-<p>Delete this?</p>
-<button class="btn btn-dark" (click)="onNoClick()" cdkFocusInitial>X</button>
-<button mat-button class="btn btn-danger" [mat-dialog-close]="true">✓</button>
+<p>Color</p>
+<button class="btn btn-danger" [mat-dialog-close]="'red'">R</button>
+<button class="btn btn-success" [mat-dialog-close]="'green'">G</button>
+<button class="btn btn-primary" [mat-dialog-close]="'blue'">B</button>
+<p>Delete?</p>
+<button
+    class="btn btn-dark button-with-space"
+    (click)="onNoClick()"
+    cdkFocusInitial
+>
+    X
+</button>
+<button
+    mat-button
+    class="btn btn-danger button-with-space"
+    [mat-dialog-close]="'delete'"
+>
+    ✓
+</button>

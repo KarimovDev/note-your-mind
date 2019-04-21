@@ -311,6 +311,7 @@ router.post('/tasks', (req, res) => {
                         {
                             $set: {
                                 _id: el._id,
+                                color: el.color,
                                 _deskId: ObjectId(el._deskId),
                                 el1: el.el1,
                                 coords1: el.coords1,

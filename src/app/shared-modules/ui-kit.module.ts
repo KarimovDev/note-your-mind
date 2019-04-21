@@ -18,7 +18,7 @@ import { ConfigDialogComponent } from '../components/config-dialog/config-dialog
         MatListModule,
         MatCardModule,
         MatSnackBarModule,
-        MatDialogModule
+        MatDialogModule,
     ],
     entryComponents: [ConfigDialogComponent],
 })

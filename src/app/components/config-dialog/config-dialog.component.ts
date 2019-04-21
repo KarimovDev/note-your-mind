@@ -1,9 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-
-export interface DialogData {
-    name: string;
-}
+import { DialogData } from 'src/app/models/dialog-data.model';
 
 @Component({
     selector: 'nym-config-dialog',

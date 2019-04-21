@@ -23,10 +23,23 @@ export class LineDrawComponent {
         });
 
         dialogRef.afterClosed().subscribe(
-            (result: boolean): void => {
-                if (result) {
-                    this.deleteLine.emit(this.connectedTaskCards[index]._id);
-                    this.connectedTaskCards.splice(index, 1);
+            (result: string): void => {
+                switch (result) {
+                    case 'delete':
+                        this.deleteLine.emit(
+                            this.connectedTaskCards[index]._id
+                        );
+                        this.connectedTaskCards.splice(index, 1);
+                        break;
+                    case 'red':
+                        this.connectedTaskCards[index].color = result;
+                        break;
+                    case 'green':
+                        this.connectedTaskCards[index].color = result;
+                        break;
+                    case 'blue':
+                        this.connectedTaskCards[index].color = result;
+                        break;
                 }
             }
         );
