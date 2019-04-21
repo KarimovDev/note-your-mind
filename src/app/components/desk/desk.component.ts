@@ -136,6 +136,7 @@ export class DeskComponent implements OnInit {
 
     public ngOnDestroy(): void {
         this.subscription.forEach((el: Subscription) => el.unsubscribe());
+        this.subscription = [];
     }
 
     private onMouseDown(e: MouseEvent, index: number): boolean {
@@ -182,4 +183,6 @@ export class DeskComponent implements OnInit {
             this.draggable.currentCard.isNew = false;
         }
     }
+
+    public onConnectClick(): void {}
 }

@@ -1,13 +1,10 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <h1 class="title">Вход</h1>
-            <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
-                {{ errorMessage }}
-            </div>
+            <h1 class="title">Login</h1>
             <form [formGroup]="form" (submit)="submit()">
                 <div class="form-group">
-                    <label for="emailLogin">Электропочта</label>
+                    <label for="emailLogin">Email</label>
                     <input
                         type="email"
                         formControlName="email"
@@ -15,11 +12,11 @@
                         [class.is-invalid]="email.invalid && email.touched"
                         id="emailLogin"
                         aria-describedby="email"
-                        placeholder="Ваш адрес"
+                        placeholder="Your email"
                     />
                 </div>
                 <div class="form-group">
-                    <label for="password">Пароль</label>
+                    <label for="password">Pass</label>
                     <input
                         type="password"
                         formControlName="password"
@@ -29,7 +26,7 @@
                             password.invalid && password.touched
                         "
                         id="password"
-                        placeholder="Ваш пароль"
+                        placeholder="Your pass"
                     />
                 </div>
                 <div class="d-flex justify-content-end">
@@ -38,16 +35,16 @@
                         [disabled]="form.invalid"
                         class="btn btn-primary"
                     >
-                        Войти
+                        Sign in
                     </button>
-                    <span class="btn">или</span>
+                    <span class="btn">or</span>
                     <button
                         type="button"
                         (click)="signUp()"
                         [disabled]="form.invalid"
                         class="btn btn-success"
                     >
-                        Зарегистрироваться
+                        Sing up
                     </button>
                 </div>
             </form>

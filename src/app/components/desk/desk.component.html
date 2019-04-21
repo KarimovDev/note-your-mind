@@ -16,12 +16,19 @@
                 type="text"
                 class="form-control-plaintext"
                 [value]="card.name"
-                aria-describedby="basic-addon1"
             />
             <div class="input-group-append">
                 <span
                     class="input-group-text"
-                    id="basic-addon1"
+                    id="connection--button"
+                    (click)="onConnectClick($event, i)"
+                    >⇿</span
+                >
+            </div>
+            <div class="input-group-append">
+                <span
+                    class="input-group-text"
+                    id="drag--button"
                     (mousedown)="onMouseDown($event, i)"
                     >⤲</span
                 >

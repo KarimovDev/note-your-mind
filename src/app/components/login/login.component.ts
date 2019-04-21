@@ -52,6 +52,7 @@ export class LoginComponent implements OnInit {
 
     public ngOnDestroy(): void {
         this.subscription.forEach((el: Subscription) => el.unsubscribe());
+        this.subscription = [];
     }
 
     public get email(): AbstractControl {

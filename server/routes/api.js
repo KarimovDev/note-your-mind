@@ -48,7 +48,10 @@ router.get('/users', (req, res) => {
             .toArray()
             .then(users => {
                 resAns = response();
-                if (users.length === 0) resAns.status = 404;
+                if (users.length === 0) {
+                    resAns.status = 404;
+                    resAns.message = 'Unknown username or bad password';
+                }
                 resAns.data = users;
                 res.json(resAns);
             })

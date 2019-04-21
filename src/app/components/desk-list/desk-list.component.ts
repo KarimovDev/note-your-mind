@@ -5,7 +5,6 @@ import { MongoDto } from '../../models/mongo-dto.model';
 import { AppStateService } from '../../services/app-state.service';
 import { User } from '../../models/user.model';
 import { AuthService } from '../../services/auth/auth.service';
-import { take, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
 
@@ -37,6 +36,10 @@ export class DeskListComponent implements OnInit {
             this.authService.newUser$.subscribe((user: User) => {
                 this.currentUser = user;
 
+                if (!this.currentUser) {
+                    return;
+                }
+
                 this.subscription.push(
                     this.httpDesk.getDesksList(this.currentUser._id).subscribe(
                         (res: MongoDto): void => {
@@ -56,6 +59,7 @@ export class DeskListComponent implements OnInit {
 
     public ngOnDestroy(): void {
         this.subscription.forEach((el: Subscription) => el.unsubscribe());
+        this.subscription = [];
     }
 
     public addLine(name: string): void {
@@ -83,7 +87,7 @@ export class DeskListComponent implements OnInit {
             this.httpDesk.deleteDesk(id).subscribe(
                 (res: MongoDto) => {
                     if (res.status === 200) {
-                        this.showPopup('Desk has deleted');
+                        this.showPopup('Desk was deleted');
                         this.desks.splice(index, 1);
                         this.appState.desks = this.desks;
                     } else {
@@ -95,5 +99,9 @@ export class DeskListComponent implements OnInit {
                 }
             )
         );
+    }
+
+    public logout(): void {
+        this.authService.logout();
     }
 }
