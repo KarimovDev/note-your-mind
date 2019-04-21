@@ -8,6 +8,10 @@ import { AppStateService } from '../../services/app-state.service';
 import { MongoDto } from '../../models/mongo-dto.model';
 import { Desk } from '../../models/desk.model';
 import { MatSnackBar } from '@angular/material';
+import { UUID } from 'angular2-uuid';
+import { LineDrawingService } from 'src/app/services/line-drawing.service';
+import { Coords } from 'src/app/models/coords.model';
+import { ConnectedTaskCards } from 'src/app/models/connected-task-cards';
 
 @Component({
     selector: 'nym-desk',
@@ -21,9 +25,11 @@ export class DeskComponent implements OnInit {
     private subscription: Subscription[] = [];
     public cardWidth: number = 350;
     private cardHeight: number = 50;
+    private pressedTaskCards: number;
+    public connectedTaskCards: ConnectedTaskCards[] = [];
     private getNewCard(top: number, left: number): TaskCard {
         return {
-            _id: undefined,
+            _id: UUID.UUID(),
             _deskId: this.appState.currentDesk._id,
             name: 'New task',
             tasks: [],
@@ -33,6 +39,7 @@ export class DeskComponent implements OnInit {
             opacity: 0.5,
             isNew: true,
             isDrag: true,
+            isButtonPressed: false,
         };
     }
 
@@ -68,7 +75,8 @@ export class DeskComponent implements OnInit {
         private httpDesk: DeskHttpService,
         private router: Router,
         private appState: AppStateService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private lineDraw: LineDrawingService
     ) {
         this.subscription.push(
             draggable.newTaskCreating$.subscribe((e: MouseEvent) => {
@@ -146,6 +154,11 @@ export class DeskComponent implements OnInit {
         this.draggable.currentCard.opacity = 0.5;
         this.draggable.currentIndex = index;
 
+        if (this.pressedTaskCards !== undefined) {
+            this.taskCards[this.pressedTaskCards].isButtonPressed = false;
+            this.pressedTaskCards = undefined;
+        }
+
         const target: any = (e.target as Element).parentNode.parentNode;
 
         this.draggable.setShift(e, this.draggable.getCoords(target));
@@ -182,7 +195,49 @@ export class DeskComponent implements OnInit {
             this.draggable.currentCard.isDrag = false;
             this.draggable.currentCard.isNew = false;
         }
+
+        this.changeLineCoords();
     }
 
-    public onConnectClick(): void {}
+    private addLineToDraw(el1: number, el2: number): void {
+        const selector1: string = this.taskCards[el1]._id;
+        const selector2: string = this.taskCards[el2]._id;
+
+        const isBlocksAlreadyConnected: boolean = this.isBlocksAlreadyConnected(selector1, selector2);
+
+        if (!isBlocksAlreadyConnected) {
+            const coords1: Coords = this.lineDraw.getCenterCoords(
+                document.querySelector(`#id${selector1}`)
+            );
+            const coords2: Coords = this.lineDraw.getCenterCoords(
+                document.querySelector(`#id${selector2}`)
+            );
+
+            this.connectedTaskCards.push({
+                el1: selector1,
+                coords1: coords1,
+                el2: selector2,
+                coords2: coords2,
+            });
+        } else {
+            this.showPopup('Those blocks have already connected');
+        }
+    }
+
+    private isBlocksAlreadyConnected(el1: string, el2: string): boolean {
+        return false;
+    }
+
+    private changeLineCoords(): void {}
+
+    public onConnectClick(index: number): void {
+        if (this.pressedTaskCards !== undefined) {
+            this.taskCards[this.pressedTaskCards].isButtonPressed = false;
+            this.addLineToDraw(this.pressedTaskCards, index);
+            this.pressedTaskCards = undefined;
+        } else {
+            this.taskCards[index].isButtonPressed = true;
+            this.pressedTaskCards = index;
+        }
+    }
 }

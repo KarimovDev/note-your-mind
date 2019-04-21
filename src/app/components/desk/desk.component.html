@@ -8,7 +8,7 @@
     [style.left]="card.left"
     [style.zIndex]="card.zIndex ? card.zIndex : ''"
     [style.opacity]="card.opacity ? card.opacity : 1"
-    [id]="card._id"
+    [id]="'id' + card._id"
 >
     <div class="card-header">
         <div class="input-group">
@@ -19,16 +19,15 @@
             />
             <div class="input-group-append">
                 <span
-                    class="input-group-text"
-                    id="connection--button"
-                    (click)="onConnectClick($event, i)"
+                    class="input-group-text connection-button"
+                    [class.connection-button--pressed]="card.isButtonPressed"
+                    (click)="onConnectClick(i)"
                     >⇿</span
                 >
             </div>
             <div class="input-group-append">
                 <span
-                    class="input-group-text"
-                    id="drag--button"
+                    class="input-group-text drag-button"
                     (mousedown)="onMouseDown($event, i)"
                     >⤲</span
                 >
@@ -40,3 +39,4 @@
         <nym-add-line (addLine)="addLine($event, i)"></nym-add-line>
     </div>
 </div>
+<nym-line-draw [connectedTaskCards]="connectedTaskCards"></nym-line-draw>

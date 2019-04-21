@@ -42,8 +42,8 @@ export class DraggableService {
 
     public ngOnInit(): void {}
 
-    public getCoords(elem: any): { top: number; left: number } {
-        const box: any = elem.getBoundingClientRect();
+    public getCoords(elem: Element): Coords {
+        const box: ClientRect = elem.getBoundingClientRect();
 
         return {
             top: box.top + pageYOffset - this.marginTop,

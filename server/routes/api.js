@@ -225,9 +225,10 @@ router.post('/tasks', (req, res) => {
             req.body.taskCards.forEach((el, i) => {
                 new Promise((resolve, reject) => {
                     db.collection('tasks').updateOne(
-                        { _id: ObjectId(el._id) },
+                        { _id: el._id },
                         {
                             $set: {
+                                _id: el._id,
                                 _deskId: ObjectId(el._deskId),
                                 name: el.name,
                                 top: el.top,
@@ -253,7 +254,7 @@ router.post('/tasks', (req, res) => {
             req.body.deletedCardsIds.forEach((el, i) => {
                 new Promise((resolve, reject) => {
                     db.collection('tasks').deleteOne(
-                        { _id: ObjectId(el) },
+                        { _id: el },
                         function(err, res) {
                             if (err) reject(err);
                             resolve(res);

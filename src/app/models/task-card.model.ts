@@ -11,4 +11,5 @@ export interface TaskCard {
     zIndex?: number;
     opacity?: number;
     tasks: Task[];
+    isButtonPressed?: boolean;
 }

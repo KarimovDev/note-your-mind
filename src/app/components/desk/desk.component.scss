@@ -1,4 +1,4 @@
-#drag--button {
+.drag-button {
     cursor: grab;
     &:active {
         cursor: grabbing;
@@ -10,6 +10,10 @@
     padding-bottom: 8px;
 }
 
-#connection--button {
+.connection-button {
     cursor: pointer;
+
+    &--pressed {
+        background: darkgray;
+    }
 }

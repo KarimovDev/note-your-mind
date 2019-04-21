@@ -65,11 +65,11 @@ const initDb = () => {
                                                     .collection('desks')
                                                     .stats()
                                                     .then(stats => {
-                                                        initTasks(
-                                                            client.db(baseName),
-                                                            client,
-                                                            stats.count
-                                                        );
+                                                        //initTasks(
+                                                        //    client.db(baseName),
+                                                        //    client,
+                                                        //    stats.count
+                                                        //);
                                                     });
                                             }
                                         );

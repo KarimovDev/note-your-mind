@@ -19,6 +19,8 @@ import { DeleteButtonComponent } from './components/delete-button/delete-button.
 import { LoginModule } from './components/login/login.module';
 import { IntroComponent } from './components/intro/intro.component';
 import { UiKitModule } from './shared-modules/ui-kit.module';
+import { LineDrawingService } from './services/line-drawing.service';
+import { LineDrawComponent } from './components/line-draw/line-draw.component';
 
 registerLocaleData(localeRu, 'ru');
 @NgModule({
@@ -31,6 +33,7 @@ registerLocaleData(localeRu, 'ru');
         DeskListComponent,
         DeleteButtonComponent,
         IntroComponent,
+        LineDrawComponent,
     ],
     imports: [
         BrowserModule,
@@ -45,6 +48,7 @@ registerLocaleData(localeRu, 'ru');
         DeskHttpService,
         DraggableService,
         AppStateService,
+        LineDrawingService,
         {
             provide: LOCALE_ID,
             useValue: 'ru',
