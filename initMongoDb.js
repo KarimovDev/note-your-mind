@@ -65,6 +65,7 @@ const initDb = () => {
                                                     .collection('desks')
                                                     .stats()
                                                     .then(stats => {
+                                                        client.close();
                                                         //initTasks(
                                                         //    client.db(baseName),
                                                         //    client,

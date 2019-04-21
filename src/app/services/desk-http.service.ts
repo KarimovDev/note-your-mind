@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { MongoDto } from '../models/mongo-dto.model';
 import { TaskCard } from '../models/task-card.model';
 import { serverIp, serverPort } from '../constants/backend.const';
+import { ConnectedTaskCards } from '../models/connected-task-cards';
 
 @Injectable()
 export class DeskHttpService {
@@ -65,13 +66,17 @@ export class DeskHttpService {
 
     public saveTasks(
         taskCards: TaskCard[],
-        deletedCardsIds: string[]
+        deletedCardsIds: string[],
+        connectedTaskCards: ConnectedTaskCards[],
+        deletedConnIds: string[]
     ): Observable<MongoDto> {
         return this.http.post<MongoDto>(
             `http://${serverIp}:${serverPort}/api/tasks`,
             {
                 taskCards: taskCards,
                 deletedCardsIds: deletedCardsIds,
+                connectedTaskCards: connectedTaskCards,
+                deletedConnIds: deletedConnIds,
             }
         );
     }

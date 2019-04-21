@@ -188,33 +188,68 @@ router.delete('/desks', (req, res) => {
 
 router.get('/tasks', (req, res) => {
     connection(db => {
-        db.collection('tasks')
-            .find({
-                _deskId: ObjectId(req.query.id),
-            })
-            .toArray()
-            .then(tasks => {
-                resAns = response();
-                if (tasks.length === 0) {
-                    resAns.status = 204;
-                } else {
-                    resAns.status = 200;
+        const result = {
+            taskCards: [],
+            connectedTaskCards: [],
+        };
+        new Promise((resolve, reject) => {
+            let count = 2;
+            const checkDone = () => {
+                count -= 1;
+                if (count === 0) {
+                    resolve(result);
                 }
-                resAns.data = tasks;
-                res.json(resAns);
-            })
-            .catch(err => {
-                sendError(err, res);
+            };
+
+            new Promise((resolve, reject) => {
+                db.collection('tasks')
+                    .find({
+                        _deskId: ObjectId(req.query.id),
+                    })
+                    .toArray()
+                    .then(x => {
+                        if (x) result.taskCards = x;
+                    })
+                    .then(checkDone);
             });
+            new Promise((resolve, reject) => {
+                db.collection('connections')
+                    .find({
+                        _deskId: ObjectId(req.query.id),
+                    })
+                    .toArray()
+                    .then(x => {
+                        if (x) result.connectedTaskCards = x;
+                    })
+                    .then(checkDone);
+            });
+        }).then(result => {
+            resAns = response();
+            if (result.taskCards.length === 0) {
+                resAns.status = 204;
+            } else {
+                resAns.status = 200;
+            }
+            resAns.data = result;
+            res.json(resAns);
+        });
     });
 });
 
 router.post('/tasks', (req, res) => {
     connection(db => {
-        const result = { insert: [], delete: [] };
+        const result = {
+            insert: [],
+            delete: [],
+            insertConn: [],
+            deleteConn: [],
+        };
         new Promise((resolve, reject) => {
             let count =
-                req.body.taskCards.length + req.body.deletedCardsIds.length;
+                req.body.taskCards.length +
+                req.body.deletedCardsIds.length +
+                req.body.connectedTaskCards.length +
+                req.body.deletedConnIds.length;
             const checkDone = () => {
                 count -= 1;
                 if (count === 0) {
@@ -253,7 +288,54 @@ router.post('/tasks', (req, res) => {
             });
             req.body.deletedCardsIds.forEach((el, i) => {
                 new Promise((resolve, reject) => {
-                    db.collection('tasks').deleteOne(
+                    db.collection('tasks').deleteOne({ _id: el }, function(
+                        err,
+                        res
+                    ) {
+                        if (err) reject(err);
+                        resolve(res);
+                    });
+                })
+                    .catch(err => {
+                        result.delete[i] = { error: err.toString() };
+                    })
+                    .then(x => {
+                        if (x) result.delete[i] = x;
+                    })
+                    .then(checkDone);
+            });
+            req.body.connectedTaskCards.forEach((el, i) => {
+                new Promise((resolve, reject) => {
+                    db.collection('connections').updateOne(
+                        { _id: el._id },
+                        {
+                            $set: {
+                                _id: el._id,
+                                _deskId: ObjectId(el._deskId),
+                                el1: el.el1,
+                                coords1: el.coords1,
+                                el2: el.el2,
+                                coords2: el.coords2,
+                            },
+                        },
+                        { upsert: true },
+                        function(err, res) {
+                            if (err) reject(err);
+                            resolve(res);
+                        }
+                    );
+                })
+                    .catch(err => {
+                        result.insertConn[i] = { error: err.toString() };
+                    })
+                    .then(x => {
+                        if (x) result.insert[i] = x;
+                    })
+                    .then(checkDone);
+            });
+            req.body.deletedConnIds.forEach((el, i) => {
+                new Promise((resolve, reject) => {
+                    db.collection('connections').deleteOne(
                         { _id: el },
                         function(err, res) {
                             if (err) reject(err);
@@ -265,7 +347,7 @@ router.post('/tasks', (req, res) => {
                         result.delete[i] = { error: err.toString() };
                     })
                     .then(x => {
-                        if (x) result.delete[i] = x;
+                        if (x) result.deleteConn[i] = x;
                     })
                     .then(checkDone);
             });

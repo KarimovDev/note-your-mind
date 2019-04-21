@@ -20,6 +20,7 @@ import { ConnectedTaskCards } from 'src/app/models/connected-task-cards';
 })
 export class DeskComponent implements OnInit {
     public taskCards: TaskCard[] = [];
+    private deletedConnIds: string[] = [];
     private deletedCardsIds: string[] = [];
     private maxZIndex: number = 0;
     private subscription: Subscription[] = [];
@@ -96,7 +97,12 @@ export class DeskComponent implements OnInit {
         this.subscription.push(
             appState.newSaving$.subscribe(() => {
                 this.httpDesk
-                    .saveTasks(this.taskCards, this.deletedCardsIds)
+                    .saveTasks(
+                        this.taskCards,
+                        this.deletedCardsIds,
+                        this.connectedTaskCards,
+                        this.deletedConnIds
+                    )
                     .subscribe(
                         (res: MongoDto) => {
                             if (res.status === 200) {
@@ -129,7 +135,16 @@ export class DeskComponent implements OnInit {
                 (res: MongoDto): void => {
                     if (res) {
                         if (res.status === 200) {
-                            this.taskCards = res.data as TaskCard[];
+                            const result: {
+                                taskCards: TaskCard[];
+                                connectedTaskCards: ConnectedTaskCards[];
+                            } = res.data as {
+                                taskCards: TaskCard[];
+                                connectedTaskCards: ConnectedTaskCards[];
+                            };
+
+                            this.taskCards = result.taskCards;
+                            this.connectedTaskCards = result.connectedTaskCards;
                         }
                     }
                 },
@@ -203,7 +218,10 @@ export class DeskComponent implements OnInit {
         const selector1: string = this.taskCards[el1]._id;
         const selector2: string = this.taskCards[el2]._id;
 
-        const isBlocksAlreadyConnected: boolean = this.isBlocksAlreadyConnected(selector1, selector2);
+        const isBlocksAlreadyConnected: boolean = this.isBlocksAlreadyConnected(
+            selector1,
+            selector2
+        );
 
         if (!isBlocksAlreadyConnected) {
             const coords1: Coords = this.lineDraw.getCenterCoords(
@@ -214,6 +232,8 @@ export class DeskComponent implements OnInit {
             );
 
             this.connectedTaskCards.push({
+                _id: UUID.UUID(),
+                _deskId: this.appState.currentDesk._id,
                 el1: selector1,
                 coords1: coords1,
                 el2: selector2,
