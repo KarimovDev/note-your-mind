@@ -27,8 +27,8 @@ export class DeskComponent implements OnInit {
     public cardWidth: number = 350;
     private cardHeight: number = 50;
     private pressedTaskCard: number;
-    public isDragginNow: boolean = false;
     public connectedTaskCards: ConnectedTaskCards[] = [];
+    public isDragginNow: boolean = false;
 
     private getNewCard(top: number, left: number): TaskCard {
         return {
@@ -41,30 +41,19 @@ export class DeskComponent implements OnInit {
             zIndex: ++this.maxZIndex,
             opacity: 0.5,
             isNew: true,
-            isDrag: true,
             isButtonPressed: false,
         };
     }
 
     @HostListener('document:mousemove', ['$event'])
     private onMouseMove(e: MouseEvent): void {
-        if (this.draggable.currentCard && this.draggable.currentCard.isDrag) {
+        if (this.draggable.currentCard) {
             this.draggable.currentCard.top =
                 e.pageY - this.draggable.shiftY + 'px';
             this.draggable.currentCard.left =
                 e.pageX - this.draggable.shiftX + 'px';
         }
     }
-
-    /*@HostListener('document:selectstart')
-    private onSelectStart(): boolean {
-        return false;
-    }
-
-    @HostListener('document:mousedown')
-    private onMouseDownDoc(): boolean {
-        return false;
-    }*/
 
     private showPopup(message: string): void {
         this.snackBar.open(message, 'OK', {
@@ -167,12 +156,6 @@ export class DeskComponent implements OnInit {
     private onMouseDown(e: MouseEvent, index: number): boolean {
         this.isDragginNow = true;
 
-        this.draggable.currentCard = this.taskCards[index];
-        this.draggable.currentCard.isDrag = true;
-        this.draggable.currentCard.zIndex = ++this.maxZIndex;
-        this.draggable.currentCard.opacity = 0.5;
-        this.draggable.currentIndex = index;
-
         if (this.pressedTaskCard !== undefined) {
             this.taskCards[this.pressedTaskCard].isButtonPressed = false;
             this.pressedTaskCard = undefined;
@@ -182,7 +165,16 @@ export class DeskComponent implements OnInit {
 
         this.draggable.setShift(e, this.draggable.getCoords(target));
 
+        this.startDragging(index);
+
         return false;
+    }
+
+    private startDragging(index: number): void {
+        this.draggable.currentCard = this.taskCards[index];
+        this.draggable.currentCard.zIndex = ++this.maxZIndex;
+        this.draggable.currentCard.opacity = 0.5;
+        this.draggable.currentIndex = index;
     }
 
     public addLine(e: string, i: number): void {
@@ -193,32 +185,42 @@ export class DeskComponent implements OnInit {
     private onMouseUp(e: MouseEvent): void {
         this.isDragginNow = false;
 
-        if (!this.draggable.currentCard) {
-            return;
-        } else if (
-            this.draggable.isIntersect(e, this.draggable.deleteCoords) &&
-            this.draggable.currentCard.isDrag
-        ) {
-            this.deletedCardsIds.push(this.draggable.currentCard._id);
-            this.draggable.currentCard.isDrag = false;
-            this.draggable.currentCard = undefined;
-            this.taskCards.splice(this.draggable.currentIndex, 1);
-        } else if (
-            this.draggable.isIntersect(e, this.draggable.addCoords) &&
-            this.draggable.currentCard.isDrag &&
-            this.draggable.currentCard.isNew
-        ) {
-            this.draggable.currentCard.isDrag = false;
-            this.draggable.currentCard = undefined;
-            this.taskCards.splice(this.draggable.currentIndex, 1);
-        } else {
-            this.draggable.currentCard.opacity = 1;
-            this.draggable.currentCard.isDrag = false;
-            this.draggable.currentCard.isNew = false;
-        }
+        const dragCard: TaskCard = this.draggable.currentCard;
+        const isOnDelete: boolean = this.draggable.isIntersect(
+            e,
+            this.draggable.deleteCoords
+        );
+        const isOnAdd: boolean = this.draggable.isIntersect(
+            e,
+            this.draggable.addCoords
+        );
 
-        this.updateLineCoords();
+        if (!dragCard) {
+            return;
+        } else if (isOnDelete) {
+            this.deleteTaskCard();
+        } else if (isOnAdd && dragCard.isNew) {
+            this.deleteTaskCard();
+        } else {
+            this.stopDragging();
+        }
     }
+
+    private stopDragging(): void {
+        this.updateLineCoords();
+        this.draggable.currentCard.opacity = 1;
+        this.draggable.currentCard.isNew = false;
+        this.draggable.currentCard = undefined;
+    }
+
+    private deleteTaskCard(): void {
+        this.deleteLines(this.draggable.currentCard._id);
+        this.deletedCardsIds.push(this.draggable.currentCard._id);
+        this.draggable.currentCard = undefined;
+        this.taskCards.splice(this.draggable.currentIndex, 1);
+    }
+
+    private deleteLines(id: string): void {}
 
     private addLineToDraw(el1: number, el2: number): void {
         const selector1: string = this.taskCards[el1]._id;

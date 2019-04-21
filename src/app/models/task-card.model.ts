@@ -6,7 +6,6 @@ export interface TaskCard {
     name: string;
     top?: string;
     left?: string;
-    isDrag?: boolean;
     isNew?: boolean;
     zIndex?: number;
     opacity?: number;
