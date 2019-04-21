@@ -207,7 +207,7 @@ export class DeskComponent implements OnInit {
     }
 
     private stopDragging(): void {
-        this.updateLineCoords();
+        this.updateLineCoords(this.draggable.currentCard._id);
         this.draggable.currentCard.opacity = 1;
         this.draggable.currentCard.isNew = false;
         this.draggable.currentCard = undefined;
@@ -219,8 +219,6 @@ export class DeskComponent implements OnInit {
         this.draggable.currentCard = undefined;
         this.taskCards.splice(this.draggable.currentIndex, 1);
     }
-
-    private deleteLines(id: string): void {}
 
     private addLineToDraw(el1: number, el2: number): void {
         const selector1: string = this.taskCards[el1]._id;
@@ -254,23 +252,61 @@ export class DeskComponent implements OnInit {
     }
 
     private isBlocksAlreadyConnected(el1: string, el2: string): boolean {
-        return false;
+        let result: boolean = false;
+
+        this.connectedTaskCards.forEach((el: ConnectedTaskCards) => {
+            if (el.el1 === el1 && el.el2 === el2) {
+                result = true;
+            } else if (el.el1 === el2 && el.el2 === el1) {
+                result = true;
+            }
+        });
+
+        return result;
     }
 
-    private updateLineCoords(): void {}
+    private deleteLines(id: string): void {
+        const result: ConnectedTaskCards[] = this.connectedTaskCards.filter(
+            (el: ConnectedTaskCards) => {
+                return !(el.el1 === id || el.el2 === id);
+            }
+        );
+
+        this.connectedTaskCards = result;
+    }
+
+    private updateLineCoords(id: string): void {
+        const coords: Coords = this.lineDraw.getCenterCoords(
+            document.querySelector(`#id${id}`)
+        );
+
+        this.connectedTaskCards.forEach((el: ConnectedTaskCards) => {
+            if (el.el1 === id) {
+                el.coords1 = coords;
+            } else if (el.el2 === id) {
+                el.coords2 = coords;
+            }
+        });
+    }
 
     public onDeleteLine(id: string): void {
         this.deletedConnIds.push(id);
     }
 
     public onConnectClick(index: number): void {
-        if (this.pressedTaskCard !== undefined) {
+        if (
+            this.pressedTaskCard !== undefined &&
+            this.pressedTaskCard !== index
+        ) {
             this.taskCards[this.pressedTaskCard].isButtonPressed = false;
             this.addLineToDraw(this.pressedTaskCard, index);
             this.pressedTaskCard = undefined;
         } else {
-            this.taskCards[index].isButtonPressed = true;
-            this.pressedTaskCard = index;
+            this.taskCards[index].isButtonPressed = !this.taskCards[index]
+                .isButtonPressed;
+            this.pressedTaskCard = this.taskCards[index].isButtonPressed
+                ? index
+                : undefined;
         }
     }
 }
