@@ -268,7 +268,11 @@ export class DeskComponent implements OnInit {
     private deleteLines(id: string): void {
         const result: ConnectedTaskCards[] = this.connectedTaskCards.filter(
             (el: ConnectedTaskCards) => {
-                return !(el.el1 === id || el.el2 === id);
+                if (el.el1 === id || el.el2 === id) {
+                    this.onDeleteLine(el._id);
+                } else {
+                    return true;
+                }
             }
         );
 
