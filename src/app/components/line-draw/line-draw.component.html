@@ -1,6 +1,7 @@
-<svg height="100vh" width="100vw">
+<svg id="svg_layout">
     <line
         class="line"
+        [style.opacity]="isDragginNow ? 0 : 1"
         [id]="'id' + connection._id"
         *ngFor="let connection of connectedTaskCards; let i = index"
         [attr.x1]="connection.coords1.left"

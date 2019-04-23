@@ -41,6 +41,6 @@
 </div>
 <nym-line-draw
     (deleteLine)="onDeleteLine($event)"
-    [style.opacity]="isDragginNow ? 0 : 1"
+    [isDragginNow]="isDragginNow"
     [connectedTaskCards]="connectedTaskCards"
 ></nym-line-draw>

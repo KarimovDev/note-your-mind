@@ -10,6 +10,7 @@ import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
 })
 export class LineDrawComponent {
     @Input() public connectedTaskCards: ConnectedTaskCards[];
+    @Input() public isDragginNow: boolean;
     @Output() public deleteLine: EventEmitter<string> = new EventEmitter<
         string
     >();

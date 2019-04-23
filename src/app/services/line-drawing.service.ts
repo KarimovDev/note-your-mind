@@ -7,8 +7,8 @@ export class LineDrawingService {
         const box: ClientRect = elem.getBoundingClientRect();
 
         return {
-            top: box.top + box.height / 2,
-            left: box.left + box.width / 2,
+            top: box.top + box.height / 2 + pageYOffset,
+            left: box.left + box.width / 2 + pageXOffset,
         };
     }
 }
