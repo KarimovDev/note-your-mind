@@ -1,7 +1,7 @@
 import { Desk } from './desk.model';
 import { User } from './user.model';
 import { TaskCard } from './task-card.model';
-import { ConnectedTaskCards } from './connected-task-cards';
+import { ConnectedTaskCards } from './connected-task-cards.model';
 
 export interface MongoDto {
     result: { ok: number };

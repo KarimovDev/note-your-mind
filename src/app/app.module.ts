@@ -18,7 +18,7 @@ import { AppStateService } from './services/app-state.service';
 import { DeleteButtonComponent } from './components/delete-button/delete-button.component';
 import { LoginModule } from './components/login/login.module';
 import { IntroComponent } from './components/intro/intro.component';
-import { UiKitModule } from './shared-modules/ui-kit.module';
+import { UiKitModule } from './shared/ui-kit.module';
 import { LineDrawingService } from './services/line-drawing.service';
 import { LineDrawComponent } from './components/line-draw/line-draw.component';
 import { ConfigDialogComponent } from './components/config-dialog/config-dialog.component';

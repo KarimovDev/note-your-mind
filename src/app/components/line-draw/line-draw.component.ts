@@ -1,5 +1,5 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
-import { ConnectedTaskCards } from 'src/app/models/connected-task-cards';
+import { ConnectedTaskCards } from '../../models/connected-task-cards.model';
 import { MatDialog } from '@angular/material';
 import { ConfigDialogComponent } from '../config-dialog/config-dialog.component';
 
