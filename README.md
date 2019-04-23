@@ -19,4 +19,3 @@ Later the backend will use as a production server for app plus as proxy to mongo
 ## Database
 
 In this app is used MongoDB server is runed on `mongodb://78.155.218.226:27017`. The database name is `nym`.
-To remake database use initMongoDb.js in the root of the project.

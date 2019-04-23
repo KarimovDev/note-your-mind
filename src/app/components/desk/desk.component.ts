@@ -11,7 +11,8 @@ import { MatSnackBar } from '@angular/material';
 import { UUID } from 'angular2-uuid';
 import { LineDrawingService } from 'src/app/services/line-drawing.service';
 import { Coords } from 'src/app/models/coords.model';
-import { ConnectedTaskCards } from 'src/app/models/connected-task-cards';
+import { ConnectedTaskCards } from 'src/app/models/connected-task-cards.model';
+import { InputParamsSaveTasks } from 'src/app/models/input-params-save-tasks.model';
 
 @Component({
     selector: 'nym-desk',
@@ -87,25 +88,25 @@ export class DeskComponent implements OnInit {
         );
         this.subscription.push(
             appState.newSaving$.subscribe(() => {
-                this.httpDesk
-                    .saveTasks(
-                        this.taskCards,
-                        this.deletedCardsIds,
-                        this.connectedTaskCards,
-                        this.deletedConnIds
-                    )
-                    .subscribe(
-                        (res: MongoDto) => {
-                            if (res.status === 200) {
-                                this.showPopup('Saved');
-                            } else {
-                                this.showPopup(res.message);
-                            }
-                        },
-                        (error: Error) => {
-                            this.showPopup(error.message);
+                const inputParams: InputParamsSaveTasks = {
+                    taskCards: this.taskCards,
+                    deletedCardsIds: this.deletedCardsIds,
+                    connectedTaskCards: this.connectedTaskCards,
+                    deletedConnIds: this.deletedConnIds,
+                };
+
+                this.httpDesk.saveTasks(inputParams).subscribe(
+                    (res: MongoDto) => {
+                        if (res.status === 200) {
+                            this.showPopup('Saved');
+                        } else {
+                            this.showPopup(res.message);
                         }
-                    );
+                    },
+                    (error: Error) => {
+                        this.showPopup(error.message);
+                    }
+                );
             })
         );
     }

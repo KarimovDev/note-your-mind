@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MongoDto } from '../models/mongo-dto.model';
-import { TaskCard } from '../models/task-card.model';
-import { serverIp, serverPort } from '../constants/backend.const';
-import { ConnectedTaskCards } from '../models/connected-task-cards';
+import { environment } from 'src/environments/environment';
+import { InputParamsSaveTasks } from '../models/input-params-save-tasks.model';
 
 @Injectable()
 export class DeskHttpService {
@@ -15,7 +14,9 @@ export class DeskHttpService {
         const options: { params: HttpParams } = { params: params };
 
         return this.http.get<MongoDto>(
-            `http://${serverIp}:${serverPort}/api/desks`,
+            `http://${environment.serverIp}:${
+                environment.serverPort
+            }/api/desks`,
             options
         );
     }
@@ -25,7 +26,9 @@ export class DeskHttpService {
         const options: { params: HttpParams } = { params: params };
 
         return this.http.get<MongoDto>(
-            `http://${serverIp}:${serverPort}/api/tasks`,
+            `http://${environment.serverIp}:${
+                environment.serverPort
+            }/api/tasks`,
             options
         );
     }
@@ -39,14 +42,18 @@ export class DeskHttpService {
         const options: { params: HttpParams } = { params: params };
 
         return this.http.get<MongoDto>(
-            `http://${serverIp}:${serverPort}/api/users`,
+            `http://${environment.serverIp}:${
+                environment.serverPort
+            }/api/users`,
             options
         );
     }
 
     public addDesk(id: string, name: string): Observable<MongoDto> {
         return this.http.post<MongoDto>(
-            `http://${serverIp}:${serverPort}/api/desks`,
+            `http://${environment.serverIp}:${
+                environment.serverPort
+            }/api/desks`,
             {
                 _userId: id,
                 name: name,
@@ -56,7 +63,9 @@ export class DeskHttpService {
 
     public addUser(email: string, pass: string): Observable<MongoDto> {
         return this.http.post<MongoDto>(
-            `http://${serverIp}:${serverPort}/api/users`,
+            `http://${environment.serverIp}:${
+                environment.serverPort
+            }/api/users`,
             {
                 email: email,
                 pass: pass,
@@ -64,19 +73,16 @@ export class DeskHttpService {
         );
     }
 
-    public saveTasks(
-        taskCards: TaskCard[],
-        deletedCardsIds: string[],
-        connectedTaskCards: ConnectedTaskCards[],
-        deletedConnIds: string[]
-    ): Observable<MongoDto> {
+    public saveTasks(inputParams: InputParamsSaveTasks): Observable<MongoDto> {
         return this.http.post<MongoDto>(
-            `http://${serverIp}:${serverPort}/api/tasks`,
+            `http://${environment.serverIp}:${
+                environment.serverPort
+            }/api/tasks`,
             {
-                taskCards: taskCards,
-                deletedCardsIds: deletedCardsIds,
-                connectedTaskCards: connectedTaskCards,
-                deletedConnIds: deletedConnIds,
+                taskCards: inputParams.taskCards,
+                deletedCardsIds: inputParams.deletedCardsIds,
+                connectedTaskCards: inputParams.connectedTaskCards,
+                deletedConnIds: inputParams.deletedConnIds,
             }
         );
     }
@@ -86,7 +92,9 @@ export class DeskHttpService {
         const options: { params: HttpParams } = { params: params };
 
         return this.http.delete<MongoDto>(
-            `http://${serverIp}:${serverPort}/api/desks`,
+            `http://${environment.serverIp}:${
+                environment.serverPort
+            }/api/desks`,
             options
         );
     }
