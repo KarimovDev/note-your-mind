@@ -17,7 +17,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         children: [
             {
-                path: 'desks/:id',
+                path: ':id',
                 component: DeskComponent,
             },
             {

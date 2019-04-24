@@ -269,6 +269,7 @@ router.post('/tasks', (req, res) => {
                                 top: el.top,
                                 left: el.left,
                                 tasks: el.tasks,
+                                color: el.color,
                             },
                         },
                         { upsert: true },

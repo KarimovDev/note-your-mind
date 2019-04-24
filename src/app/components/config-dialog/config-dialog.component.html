@@ -1,20 +1,30 @@
 <h4>{{ data.name }}</h4>
-<p>Color</p>
-<button class="btn btn-danger" [mat-dialog-close]="'red'">R</button>
-<button class="btn btn-success" [mat-dialog-close]="'green'">G</button>
-<button class="btn btn-primary" [mat-dialog-close]="'blue'">B</button>
-<p>Delete?</p>
-<button
-    class="btn btn-dark button-with-space"
-    (click)="onNoClick()"
-    cdkFocusInitial
->
-    X
-</button>
-<button
-    mat-button
-    class="btn btn-danger button-with-space"
-    [mat-dialog-close]="'delete'"
->
-    ✓
-</button>
+<div *ngIf="data.params.showColor">
+    <p>Color</p>
+    <button class="btn btn-danger" [mat-dialog-close]="'red'">R</button>
+    <button class="btn btn-success" [mat-dialog-close]="'green'">G</button>
+    <button class="btn btn-primary" [mat-dialog-close]="'blue'">B</button>
+    <button
+        *ngIf="data.params.showUndefColor"
+        class="btn btn-light"
+        [mat-dialog-close]="'undefined'"
+    >
+        U
+    </button>
+</div>
+<div *ngIf="data.params.showDelete">
+    <p>Delete?</p>
+    <button
+        class="btn btn-dark button-with-space"
+        (click)="onNoClick()"
+        cdkFocusInitial
+    >
+        X
+    </button>
+    <button
+        class="btn btn-danger button-with-space"
+        [mat-dialog-close]="'delete'"
+    >
+        ✓
+    </button>
+</div>

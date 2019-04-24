@@ -1,7 +1,16 @@
 <svg id="svg_layout">
     <line
         class="line"
-        [style.opacity]="isDragginNow ? 0 : 1"
+        [id]="'id' + connection._id"
+        *ngFor="let connection of connectedTaskCards; let i = index"
+        [attr.x1]="connection.coords1.left"
+        [attr.y1]="connection.coords1.top"
+        [attr.x2]="connection.coords2.left"
+        [attr.y2]="connection.coords2.top"
+        [style.stroke]="connection.color"
+    />
+    <line
+        class="line-helper"
         [id]="'id' + connection._id"
         *ngFor="let connection of connectedTaskCards; let i = index"
         [attr.x1]="connection.coords1.left"
@@ -9,6 +18,5 @@
         [attr.x2]="connection.coords2.left"
         [attr.y2]="connection.coords2.top"
         (click)="onLineClick(i)"
-        [style.stroke]="connection.color"
     />
 </svg>

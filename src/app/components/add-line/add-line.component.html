@@ -11,6 +11,9 @@
             <span *ngIf="getErrors('title')?.required">Required</span>
         </div>
     </div>
+    <div *ngIf="isWithDate" class="form-group">
+        <input type="date" class="form-control" formControlName="date" />
+    </div>
     <div class="form-group">
         <button type="submit" class="btn btn-success btn-block">
             Add

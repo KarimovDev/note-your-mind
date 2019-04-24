@@ -7,6 +7,7 @@ import { User } from '../../models/user.model';
 import { AuthService } from '../../services/auth/auth.service';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
+import { AddLineEmit } from 'src/app/models/add-line-emit.model';
 
 @Component({
     selector: 'nym-desk-list',
@@ -62,9 +63,9 @@ export class DeskListComponent implements OnInit {
         this.subscription = [];
     }
 
-    public addLine(name: string): void {
+    public addLine(emitted: AddLineEmit): void {
         this.subscription.push(
-            this.httpDesk.addDesk(this.currentUser._id, name).subscribe(
+            this.httpDesk.addDesk(this.currentUser._id, emitted.name).subscribe(
                 (res: MongoDto) => {
                     if (res.status === 200) {
                         this.desks = [...this.desks, ...(res.data as Desk[])];

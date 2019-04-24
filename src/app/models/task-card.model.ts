@@ -8,7 +8,8 @@ export interface TaskCard {
     left?: string;
     isNew?: boolean;
     zIndex?: number;
-    opacity?: number;
     tasks: Task[];
     isButtonPressed?: boolean;
+    isAddBlockOpen?: boolean;
+    color?: string;
 }

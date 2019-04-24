@@ -7,12 +7,15 @@ import { DraggableService } from '../../services/draggable.service';
 import { AppStateService } from '../../services/app-state.service';
 import { MongoDto } from '../../models/mongo-dto.model';
 import { Desk } from '../../models/desk.model';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { UUID } from 'angular2-uuid';
 import { LineDrawingService } from 'src/app/services/line-drawing.service';
 import { Coords } from 'src/app/models/coords.model';
 import { ConnectedTaskCards } from 'src/app/models/connected-task-cards.model';
 import { InputParamsSaveTasks } from 'src/app/models/input-params-save-tasks.model';
+import { AddLineEmit } from 'src/app/models/add-line-emit.model';
+import { ConfigDialogComponent } from '../config-dialog/config-dialog.component';
+import { DeskColors } from 'src/app/enums/desk-colors.enum';
 
 @Component({
     selector: 'nym-desk',
@@ -29,7 +32,6 @@ export class DeskComponent implements OnInit {
     private cardHeight: number = 50;
     private pressedTaskCard: number;
     public connectedTaskCards: ConnectedTaskCards[] = [];
-    public isDragginNow: boolean = false;
 
     private getNewCard(top: number, left: number): TaskCard {
         return {
@@ -40,20 +42,10 @@ export class DeskComponent implements OnInit {
             top: top + 'px',
             left: left + 'px',
             zIndex: ++this.maxZIndex,
-            opacity: 0.5,
             isNew: true,
             isButtonPressed: false,
+            isAddBlockOpen: false,
         };
-    }
-
-    @HostListener('document:mousemove', ['$event'])
-    private onMouseMove(e: MouseEvent): void {
-        if (this.draggable.currentCard) {
-            this.draggable.currentCard.top =
-                e.pageY - this.draggable.shiftY + 'px';
-            this.draggable.currentCard.left =
-                e.pageX - this.draggable.shiftX + 'px';
-        }
     }
 
     private showPopup(message: string): void {
@@ -69,7 +61,8 @@ export class DeskComponent implements OnInit {
         private router: Router,
         private appState: AppStateService,
         private snackBar: MatSnackBar,
-        private lineDraw: LineDrawingService
+        private lineDraw: LineDrawingService,
+        public dialog: MatDialog
     ) {
         this.subscription.push(
             draggable.newTaskCreating$.subscribe((e: MouseEvent) => {
@@ -154,9 +147,38 @@ export class DeskComponent implements OnInit {
         this.subscription = [];
     }
 
-    private onMouseDown(e: MouseEvent, index: number): boolean {
-        this.isDragginNow = true;
+    private startDragging(index: number): void {
+        this.draggable.currentCard = this.taskCards[index];
+        this.draggable.currentCard.zIndex = ++this.maxZIndex;
+        this.draggable.currentIndex = index;
+    }
 
+    public addLine(emitted: AddLineEmit, i: number): void {
+        this.taskCards[i].tasks.push(emitted);
+    }
+
+    public toggleAddBlock(index: number): void {
+        this.taskCards[index].isAddBlockOpen = !this.taskCards[index]
+            .isAddBlockOpen;
+    }
+
+    @HostListener('document:mousemove', ['$event'])
+    private onMouseMove(e: MouseEvent): void {
+        if (this.draggable.currentCard) {
+            this.draggable.currentCard.top =
+                e.pageY - this.draggable.shiftY + 'px';
+            this.draggable.currentCard.left =
+                e.pageX - this.draggable.shiftX + 'px';
+
+            const updateLineCoords: Function = this.updateLineCoordsFactory(
+                this.draggable.currentCard._id
+            );
+
+            updateLineCoords();
+        }
+    }
+
+    private onMouseDown(e: MouseEvent, index: number): boolean {
         if (this.pressedTaskCard !== undefined) {
             this.taskCards[this.pressedTaskCard].isButtonPressed = false;
             this.pressedTaskCard = undefined;
@@ -171,21 +193,8 @@ export class DeskComponent implements OnInit {
         return false;
     }
 
-    private startDragging(index: number): void {
-        this.draggable.currentCard = this.taskCards[index];
-        this.draggable.currentCard.zIndex = ++this.maxZIndex;
-        this.draggable.currentCard.opacity = 0.5;
-        this.draggable.currentIndex = index;
-    }
-
-    public addLine(e: string, i: number): void {
-        this.taskCards[i].tasks.push({ name: e, date: new Date() });
-    }
-
     @HostListener('document:mouseup', ['$event'])
     private onMouseUp(e: MouseEvent): void {
-        this.isDragginNow = false;
-
         const dragCard: TaskCard = this.draggable.currentCard;
         const isOnDelete: boolean = this.draggable.isIntersect(
             e,
@@ -208,8 +217,6 @@ export class DeskComponent implements OnInit {
     }
 
     private stopDragging(): void {
-        this.updateLineCoords(this.draggable.currentCard._id);
-        this.draggable.currentCard.opacity = 1;
         this.draggable.currentCard.isNew = false;
         this.draggable.currentCard = undefined;
     }
@@ -280,18 +287,19 @@ export class DeskComponent implements OnInit {
         this.connectedTaskCards = result;
     }
 
-    private updateLineCoords(id: string): void {
+    private updateLineCoordsFactory(id: string): any {
         const coords: Coords = this.lineDraw.getCenterCoords(
             document.querySelector(`#id${id}`)
         );
 
-        this.connectedTaskCards.forEach((el: ConnectedTaskCards) => {
-            if (el.el1 === id) {
-                el.coords1 = coords;
-            } else if (el.el2 === id) {
-                el.coords2 = coords;
-            }
-        });
+        return (): void =>
+            this.connectedTaskCards.forEach((el: ConnectedTaskCards) => {
+                if (el.el1 === id) {
+                    el.coords1 = coords;
+                } else if (el.el2 === id) {
+                    el.coords2 = coords;
+                }
+            });
     }
 
     public onDeleteLine(id: string): void {
@@ -313,5 +321,38 @@ export class DeskComponent implements OnInit {
                 ? index
                 : undefined;
         }
+    }
+
+    public onBlockParamClick(index: number): void {
+        const dialogRef: any = this.dialog.open(ConfigDialogComponent, {
+            width: '200px',
+            data: {
+                name: 'Task config',
+                params: {
+                    showColor: true,
+                    showUndefColor: true,
+                    showDelete: false,
+                },
+            },
+        });
+
+        dialogRef.afterClosed().subscribe(
+            (result: string): void => {
+                switch (result) {
+                    case 'red':
+                        this.taskCards[index].color = DeskColors.Red;
+                        break;
+                    case 'green':
+                        this.taskCards[index].color = DeskColors.Green;
+                        break;
+                    case 'blue':
+                        this.taskCards[index].color = DeskColors.Blue;
+                        break;
+                    case 'undefined':
+                        this.taskCards[index].color = undefined;
+                        break;
+                }
+            }
+        );
     }
 }

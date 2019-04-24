@@ -1,6 +1,12 @@
 .line {
-    cursor: pointer;
     stroke-width: 5;
+}
+
+.line-helper {
+    cursor: pointer;
+    stroke: white;
+    stroke-opacity: 0;
+    stroke-width: 20;
 }
 
 #svg_layout {

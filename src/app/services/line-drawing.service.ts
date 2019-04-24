@@ -5,9 +5,10 @@ import { Coords } from '../models/coords.model';
 export class LineDrawingService {
     public getCenterCoords(elem: Element): Coords {
         const box: ClientRect = elem.getBoundingClientRect();
+        const paddingTopForLine: number = 80;
 
         return {
-            top: box.top + box.height / 2 + pageYOffset,
+            top: box.top + paddingTopForLine + pageYOffset,
             left: box.left + box.width / 2 + pageXOffset,
         };
     }

@@ -7,16 +7,22 @@
     [style.top]="card.top"
     [style.left]="card.left"
     [style.zIndex]="card.zIndex ? card.zIndex : ''"
-    [style.opacity]="card.opacity ? card.opacity : 1"
     [id]="'id' + card._id"
 >
-    <div class="card-header">
+    <div class="card-header" [style.background-color]="card.color">
         <div class="input-group">
             <input
                 type="text"
                 class="form-control-plaintext"
                 [value]="card.name"
             />
+            <div class="input-group-append">
+                <span
+                    class="input-group-text connection-button"
+                    (click)="onBlockParamClick(i)"
+                    >...</span
+                >
+            </div>
             <div class="input-group-append">
                 <span
                     class="input-group-text connection-button"
@@ -36,11 +42,22 @@
     </div>
     <nym-task [tasks]="card.tasks"></nym-task>
     <div class="card-body">
-        <nym-add-line (addLine)="addLine($event, i)"></nym-add-line>
+        <button
+            type="button"
+            class="btn btn-light btn-block"
+            (click)="toggleAddBlock(i)"
+        >
+            Show
+        </button>
+    </div>
+    <div *ngIf="card.isAddBlockOpen" class="card-body">
+        <nym-add-line
+            [isWithDate]="true"
+            (addLine)="addLine($event, i)"
+        ></nym-add-line>
     </div>
 </div>
 <nym-line-draw
     (deleteLine)="onDeleteLine($event)"
-    [isDragginNow]="isDragginNow"
     [connectedTaskCards]="connectedTaskCards"
 ></nym-line-draw>
