@@ -195,6 +195,9 @@ export class DeskComponent implements OnInit {
 
     @HostListener('document:mouseup', ['$event'])
     private onMouseUp(e: MouseEvent): void {
+        this.draggable.setDeleteCoords();
+        this.draggable.setAddCoords();
+
         const dragCard: TaskCard = this.draggable.currentCard;
         const isOnDelete: boolean = this.draggable.isIntersect(
             e,

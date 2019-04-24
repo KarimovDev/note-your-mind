@@ -1,9 +1,43 @@
 <div class="custom-navbar">
-    <button id="add" class="nav-button" (mousedown)="onAddTask($event)">
+    <button
+        id="add"
+        class="nav-button"
+        [style.height]="draggable.navButtonSize + 'px'"
+        [style.width]="draggable.navButtonSize + 'px'"
+        (mousedown)="onAddTask($event)"
+    >
         +
     </button>
-    <button id="delete" class="nav-button">-</button>
-    <button class="nav-button" (click)="onSaveClick()">S</button>
-    <button class="nav-button" (click)="openDesksList()">...</button>
-    <button class="nav-button" (click)="logout()">↦</button>
+    <button
+        id="delete"
+        class="nav-button"
+        [style.height]="draggable.navButtonSize + 'px'"
+        [style.width]="draggable.navButtonSize + 'px'"
+    >
+        -
+    </button>
+    <button
+        class="nav-button"
+        [style.height]="draggable.navButtonSize + 'px'"
+        [style.width]="draggable.navButtonSize + 'px'"
+        (click)="onSaveClick()"
+    >
+        S
+    </button>
+    <button
+        class="nav-button"
+        [style.height]="draggable.navButtonSize + 'px'"
+        [style.width]="draggable.navButtonSize + 'px'"
+        (click)="openDesksList()"
+    >
+        ...
+    </button>
+    <button
+        class="nav-button"
+        [style.height]="draggable.navButtonSize + 'px'"
+        [style.width]="draggable.navButtonSize + 'px'"
+        (click)="logout()"
+    >
+        ↦
+    </button>
 </div>

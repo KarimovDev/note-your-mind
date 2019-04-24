@@ -11,22 +11,29 @@ export class DraggableService {
     public shiftX: number;
     public shiftY: number;
     public currentIndex: number;
-    private marginTop: number = 12;
-    public marginLeft: number = 20;
+    private marginTopTask: number = 12;
+    public marginLeftTask: number = 20;
+    public navButtonSize: number = 50;
+    public navButtonScale: number = 1.3;
+    public addElement: Element;
+    public deleteElement: Element;
 
-    public setDeleteCoords(element: Element): void {
-        this.deleteCoords = this.getCoords(element);
+    public setDeleteCoords(): void {
+        this.deleteCoords = this.getCoords(this.deleteElement);
     }
 
-    public setAddCoords(element: Element): void {
-        this.addCoords = this.getCoords(element);
+    public setAddCoords(): void {
+        this.addCoords = this.getCoords(this.addElement);
     }
 
     public isIntersect(e: MouseEvent, coords: Coords): boolean {
         return (
-            e.pageY <= coords.top + 50 + this.marginTop &&
-            e.pageX <= coords.left + 50 + this.marginLeft &&
-            e.pageX >= coords.left + this.marginLeft
+            e.pageY <=
+                coords.top + this.navButtonSize * 1.3 + this.marginTopTask &&
+            e.pageY >= coords.top + this.marginTopTask &&
+            e.pageX <=
+                coords.left + this.navButtonSize * 1.3 + this.marginLeftTask &&
+            e.pageX >= coords.left + this.marginLeftTask
         );
     }
 
@@ -34,8 +41,8 @@ export class DraggableService {
         const box: ClientRect = elem.getBoundingClientRect();
 
         return {
-            top: box.top + pageYOffset - this.marginTop,
-            left: box.left + pageXOffset - this.marginLeft,
+            top: box.top + pageYOffset - this.marginTopTask,
+            left: box.left + pageXOffset - this.marginLeftTask,
         };
     }
 

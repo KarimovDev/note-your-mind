@@ -11,15 +11,15 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class NavbarComponent implements OnInit {
     constructor(
-        private draggable: DraggableService,
+        public draggable: DraggableService,
         private router: Router,
         private appState: AppStateService,
         private authService: AuthService
     ) {}
 
     public ngOnInit(): void {
-        this.draggable.setDeleteCoords(document.querySelector('#delete'));
-        this.draggable.setAddCoords(document.querySelector('#add'));
+        this.draggable.deleteElement = document.querySelector('#delete');
+        this.draggable.addElement = document.querySelector('#add');
     }
 
     private onAddTask(e: MouseEvent): void {
