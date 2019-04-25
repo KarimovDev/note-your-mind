@@ -6,6 +6,7 @@
                     type="text"
                     class="form-control-plaintext input-block"
                     [value]="task.name"
+                    (input)="task.name = $event.target.value"
                 />
                 <span class="badge badge-secondary date-block"
                     >{{ task.date | date }}

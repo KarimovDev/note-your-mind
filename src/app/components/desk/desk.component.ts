@@ -160,6 +160,7 @@ export class DeskComponent implements OnInit {
     public toggleAddBlock(index: number): void {
         this.taskCards[index].isAddBlockOpen = !this.taskCards[index]
             .isAddBlockOpen;
+        this.taskCards[index].zIndex = ++this.maxZIndex;
     }
 
     @HostListener('document:mousemove', ['$event'])
@@ -170,11 +171,7 @@ export class DeskComponent implements OnInit {
             this.draggable.currentCard.left =
                 e.pageX - this.draggable.shiftX + 'px';
 
-            const updateLineCoords: Function = this.updateLineCoordsFactory(
-                this.draggable.currentCard._id
-            );
-
-            updateLineCoords();
+            this.updateLineCoords(e, this.draggable.currentCard._id);
         }
     }
 
@@ -187,6 +184,7 @@ export class DeskComponent implements OnInit {
         const target: any = (e.target as Element).parentNode.parentNode;
 
         this.draggable.setShift(e, this.draggable.getCoords(target));
+        this.lineDraw.setLineShift(e, target.parentNode.parentNode);
 
         this.startDragging(index);
 
@@ -250,7 +248,7 @@ export class DeskComponent implements OnInit {
 
             this.connectedTaskCards.push({
                 _id: UUID.UUID(),
-                color: 'blue',
+                color: DeskColors.Blue,
                 _deskId: this.appState.currentDesk._id,
                 el1: selector1,
                 coords1: coords1,
@@ -290,19 +288,20 @@ export class DeskComponent implements OnInit {
         this.connectedTaskCards = result;
     }
 
-    private updateLineCoordsFactory(id: string): any {
-        const coords: Coords = this.lineDraw.getCenterCoords(
-            document.querySelector(`#id${id}`)
-        );
-
-        return (): void =>
-            this.connectedTaskCards.forEach((el: ConnectedTaskCards) => {
-                if (el.el1 === id) {
-                    el.coords1 = coords;
-                } else if (el.el2 === id) {
-                    el.coords2 = coords;
-                }
-            });
+    private updateLineCoords(e: MouseEvent, id: string): any {
+        this.connectedTaskCards.forEach((el: ConnectedTaskCards) => {
+            if (el.el1 === id) {
+                el.coords1 = {
+                    top: e.pageY - this.lineDraw.lineShiftY,
+                    left: e.pageX - this.lineDraw.lineShiftX,
+                };
+            } else if (el.el2 === id) {
+                el.coords2 = {
+                    top: e.pageY - this.lineDraw.lineShiftY,
+                    left: e.pageX - this.lineDraw.lineShiftX,
+                };
+            }
+        });
     }
 
     public onDeleteLine(id: string): void {

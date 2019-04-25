@@ -11,7 +11,7 @@ export class DraggableService {
     public shiftX: number;
     public shiftY: number;
     public currentIndex: number;
-    private marginTopTask: number = 12;
+    public marginTopTask: number = 12;
     public marginLeftTask: number = 20;
     public navButtonSize: number = 50;
     public navButtonScale: number = 1.3;

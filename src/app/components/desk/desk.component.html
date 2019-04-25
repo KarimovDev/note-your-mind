@@ -15,6 +15,7 @@
                 type="text"
                 class="form-control-plaintext"
                 [value]="card.name"
+                (input)="card.name = $event.target.value"
             />
             <div class="input-group-append">
                 <span
