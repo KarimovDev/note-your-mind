@@ -1,7 +1,7 @@
 const mongoDbIp = 'localhost';
 const mongoDbPort = '27017';
 const mongoDbBaseName = 'nym';
-const apiPath = 'nym/api/';
+const apiPath = 'api/';
 const serverIp = 'localhost';
 const serverPort = '3010';
 
