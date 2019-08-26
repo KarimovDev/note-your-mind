@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { TaskCard } from '../../models/task-card.model';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DeskHttpService } from '../../services/desk-http.service';
 import { DraggableService } from '../../services/draggable.service';
 import { AppStateService } from '../../services/app-state.service';

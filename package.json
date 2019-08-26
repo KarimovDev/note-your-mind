@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --prod --base-href /nym/",
     "test": "ng test",
     "e2e": "ng e2e",
     "format": "prettier --write {\"src/app/**/*\",\"src/sass/**/*\",\"src/index.html\"}",

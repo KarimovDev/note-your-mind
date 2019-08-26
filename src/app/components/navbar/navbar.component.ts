@@ -22,19 +22,19 @@ export class NavbarComponent implements OnInit {
         this.draggable.addElement = document.querySelector('#add');
     }
 
-    private onAddTask(e: MouseEvent): void {
+    public onAddTask(e: MouseEvent): void {
         this.draggable.sendNewTaskCreating(e);
     }
 
-    private openDesksList(): void {
+    public openDesksList(): void {
         this.router.navigate(['/desks']);
     }
 
-    private logout(): void {
+    public logout(): void {
         this.authService.logout();
     }
 
-    private onSaveClick(): void {
+    public onSaveClick(): void {
         this.appState.sendSaving();
     }
 }
