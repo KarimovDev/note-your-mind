@@ -1,5 +1,4 @@
-import { serverIp, serverPort } from 'config';
-
+const config = require('./config');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -45,9 +44,9 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/note-your-mind/index.html'));
 });
 
-const port = process.env.PORT || serverPort;
+const port = process.env.PORT || config.serverPort;
 app.set('port', port);
 
 const server = http.createServer(app);
 
-server.listen(port, serverIp, () => console.log(`Running on localhost: ${port}`));
+server.listen(port, config.serverIp, () => console.log(`Running on localhost: ${port}`));

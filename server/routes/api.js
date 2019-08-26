@@ -1,10 +1,11 @@
+const config = require('../../config');
 const express = require('express');
 const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
-const mongoIp = '78.155.218.226';
-const mongoPort = '27017';
-const baseName = 'nym';
+const mongoIp = config.mongoDbIp;
+const mongoPort = config.mongoDbPort;
+const baseName = config.mongoDbBaseName;
 
 const connection = closure => {
     return MongoClient.connect(

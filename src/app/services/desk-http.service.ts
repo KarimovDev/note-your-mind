@@ -3,14 +3,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MongoDto } from '../models/mongo-dto.model';
 import { InputParamsSaveTasks } from '../models/input-params-save-tasks.model';
-import { apiPath } from 'config';
+import { config } from 'config';
 
 @Injectable()
 export class DeskHttpService {
     constructor(private http: HttpClient) {}
 
     private getUrl(path: string): string {
-        return `${apiPath}${path}`;
+        return `${config.apiPath}${path}`;
     }
 
     public getDesksList(id: string): Observable<MongoDto> {

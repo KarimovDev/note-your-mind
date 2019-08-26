@@ -1,6 +1,15 @@
-export const mongoDbIp = 'localhost';
-export const mongoDbPort = '27017';
-export const mongoDbBaseName = 'nym';
-export const apiPath = 'nym/api/';
-export const serverIp = 'localhost';
-export const serverPort = '3010';
+const mongoDbIp = 'localhost';
+const mongoDbPort = '27017';
+const mongoDbBaseName = 'nym';
+const apiPath = 'nym/api/';
+const serverIp = 'localhost';
+const serverPort = '3010';
+
+module.exports = {
+    mongoDbIp,
+    mongoDbPort,
+    mongoDbBaseName,
+    apiPath,
+    serverIp,
+    serverPort,
+};
