@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MongoDto } from '../models/mongo-dto.model';
 import { InputParamsSaveTasks } from '../models/input-params-save-tasks.model';
-import { config } from 'config';
+import * as config from 'config';
 
 @Injectable()
 export class DeskHttpService {
